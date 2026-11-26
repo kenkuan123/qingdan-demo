@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>自律就是高貴清單・網頁版</title>
+    <title>十三一清單</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet" />
@@ -312,6 +312,49 @@
 
       .foot-note{ color:var(--mut2); font-size:12px; text-align:center; margin-top:26px; }
       .hidden{ display:none !important; }
+
+      /* ---------- purpose / confirm / archived ---------- */
+      .purpose{
+        margin-top:9px; padding:8px 11px; border-radius:10px; cursor:pointer;
+        background:rgba(94,168,221,.08); border:1px dashed rgba(94,168,221,.35);
+        color:#cfe2f5; font-size:14px;
+      }
+      .purpose .pl{ color:var(--mut); font-size:12px; margin-right:6px; }
+      .purpose.empty{ color:var(--mut2); }
+      .purpose:active{ background:rgba(94,168,221,.16); }
+      .note-edit{ display:flex; gap:8px; margin-top:9px; flex-wrap:wrap; }
+      .note-edit input{ flex:1; min-width:150px; background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:10px; padding:8px 11px; color:var(--ink); }
+      .confirm-row{ display:flex; gap:7px; margin-top:9px; flex-wrap:wrap; align-items:center; }
+      .confirm-chip{
+        border-radius:18px; padding:5px 12px; font-size:13px; min-height:36px;
+        border:1px solid rgba(120,150,190,.30); background:rgba(255,255,255,.04); color:var(--mut);
+      }
+      .confirm-chip.on{ color:#14100a; font-weight:900; background:linear-gradient(135deg, var(--gold2), var(--gold)); border-color:rgba(201,162,77,.6); }
+      .confirm-chip.on-old{ color:#f6d9e2; font-weight:900; background:rgba(229,138,165,.20); border-color:rgba(229,138,165,.6); }
+      .prow.archived{ opacity:.6; }
+      .arch-tag{ color:#f0b7c8; font-size:12.5px; font-weight:700; }
+
+      /* ---------- closing / week / targets / poster ---------- */
+      .close-card{ padding:14px; margin-top:16px; }
+      .close-card h3{ margin:0 0 10px; font-size:16px; font-weight:900; color:#fff; }
+      .close-card label{ font-size:12.5px; color:var(--mut); display:block; margin:10px 0 3px; }
+      .close-card input[type="text"]{ background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:10px; padding:8px 11px; color:var(--ink); width:100%; }
+      .toggle-chip{ border-radius:11px; padding:8px 14px; font-weight:700; min-height:42px; border:1px solid rgba(120,150,190,.35); background:rgba(255,255,255,.04); color:var(--mut); }
+      .toggle-chip.on{ color:#14100a; font-weight:900; background:linear-gradient(135deg, var(--gold2), var(--gold)); border-color:rgba(201,162,77,.6); }
+      .target-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:-2px 2px 12px; color:var(--mut); font-size:13px; }
+      .target-row input{ width:58px; background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:8px; padding:5px 8px; color:var(--ink); min-height:36px; }
+      .week-row{ display:flex; align-items:center; gap:7px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06); font-size:14px; flex-wrap:wrap; }
+      .week-row:last-child{ border-bottom:0; }
+      .week-row .wd{ font-weight:900; color:#fff; min-width:92px; }
+      .week-chip{ border-radius:16px; padding:3px 10px; font-size:12.5px; border:1px solid rgba(255,255,255,.14); color:var(--mut); }
+      .week-chip b{ color:#fff; }
+      .week-chip.hit{ border-color:rgba(76,195,138,.5); color:#8fe3b6; }
+      .week-chip.hit b{ color:#8fe3b6; }
+      .poster-slot{
+        border:1px dashed rgba(120,150,190,.4); border-radius:12px; min-height:70px;
+        display:flex; align-items:center; justify-content:center; color:var(--mut2);
+        font-size:13px; margin:10px 0; background:rgba(255,255,255,.02);
+      }
       @media (prefers-reduced-motion: reduce){
         *{ transition:none !important; }
       }
@@ -319,7 +362,7 @@
   </head>
   <body>
     <div class="wrap">
-      <h1 class="page-title">自律就是高貴清單</h1>
+      <h1 class="page-title">十三一清單</h1>
       <p class="page-sub">每日人名跟進 — 名單自動排好，㩒住更新就得。</p>
 
       <nav class="tabs" role="tablist" aria-label="分頁">
@@ -331,6 +374,7 @@
       <!-- ============ 每日清單 ============ -->
       <section id="tab-daily">
         <div class="progress-row" id="progressRow"></div>
+        <div class="target-row" id="targetRow"></div>
 
         <div class="gcard datenav">
           <button class="ghost-btn" id="datePrev" aria-label="上一日">‹ 前一日</button>
@@ -357,6 +401,13 @@
           <h2>加人 / 記錄</h2><span class="cnt">㩒開嚟用</span>
         </div>
         <div id="formsArea"></div>
+
+        <div id="closingArea"></div>
+
+        <div class="gcard collapse" id="weekCollapse">
+          <button class="chead" data-collapse="weekCollapse">近 7 日完成度 <span style="color:var(--mut);font-size:13px">（三個目標達標日數）</span><span class="chev">▾</span></button>
+          <div class="cbody" id="weekBody"></div>
+        </div>
 
         <div class="gcard collapse" id="apptCollapse">
           <button class="chead" data-collapse="apptCollapse">今日約會記錄 <span class="cnt" id="apptCnt" style="color:var(--mut);font-size:13px"></span><span class="chev">▾</span></button>
@@ -497,15 +548,21 @@
     if(!state){ state = seedState(); autofill(todayStr()); save(); }
     if(!state.days[state.viewDate] && state.viewDate !== todayStr()){ /* keep stored viewDate */ }
     if(!state.viewDate) state.viewDate = todayStr();
+    if(!state.targets) state.targets = { contact: TARGETS.contact, appt: TARGETS.appt, stranger: TARGETS.stranger };
 
-    var ui = { tab:'daily', editingPid:null, drawnPid:null, focusPid:null, dupWarn:null, openOffers:{} };
+    var ui = { tab:'daily', editingPid:null, noteKey:null, drawnPid:null, focusPid:null, dupWarn:null, openOffers:{} };
     state.offers.forEach(function(o, i){ if(i === 0) ui.openOffers[o.id] = true; });
 
     function person(pid){ for(var i=0;i<state.pool.length;i++){ if(state.pool[i].id === pid) return state.pool[i]; } return null; }
     function dayOf(ds){
       if(!state.days[ds]) state.days[ds] = { follow:[], newc:[], appts:[], removed:[] };
-      if(!state.days[ds].removed) state.days[ds].removed = [];
-      return state.days[ds];
+      var d = state.days[ds];
+      if(!d.removed) d.removed = [];
+      if(d.video === undefined) d.video = false;
+      if(d.q1 === undefined) d.q1 = '';
+      if(d.q2 === undefined) d.q2 = '';
+      if(!d.tom) d.tom = ['','',''];
+      return d;
     }
     function hasRoster(ds){ var d = state.days[ds]; return !!(d && (d.follow.length || d.newc.length)); }
 
@@ -519,7 +576,7 @@
 
     /* ================= autofill (living-list logic) ================= */
     function eligibleFollow(p, ds, used){
-      return p.origin !== 'new' && !used[p.id];
+      return p.origin !== 'new' && !used[p.id] && !p.archived;
     }
     function byOldestRoster(a, b){
       var da = a.lastRoster ? daysBetween(a.lastRoster, todayStr()) : 9999;
@@ -536,14 +593,14 @@
       var day = dayOf(ds);
       var used = {};
       function takeFollow(p, st){
-        if(!p || used[p.id]) return false;
+        if(!p || used[p.id] || p.archived) return false;
         used[p.id] = 1;
         day.follow.push({ pid:p.id, st: st || 0 });
         p.lastRoster = ds;
         return true;
       }
       function takeNew(p, st){
-        if(!p || used[p.id]) return false;
+        if(!p || used[p.id] || p.archived) return false;
         used[p.id] = 1;
         day.newc.push({ pid:p.id, st: st || 0 });
         p.lastRoster = ds;
@@ -594,11 +651,11 @@
           if(r.st !== 2){ var p = person(r.pid); if(p && p.origin === 'new') takeNew(p, r.st); }
         });
       }
-      state.pool.filter(function(p){ return p.origin === 'new' && !used[p.id]; })
+      state.pool.filter(function(p){ return p.origin === 'new' && !used[p.id] && !p.archived; })
         .filter(function(p){ return !p.lastRoster || daysBetween(p.lastRoster, ds) >= 7; })
         .sort(byOldestRoster)
         .forEach(function(p){ if(day.newc.length < NEW_N) takeNew(p); });
-      state.pool.filter(function(p){ return p.origin === 'new' && !used[p.id]; })
+      state.pool.filter(function(p){ return p.origin === 'new' && !used[p.id] && !p.archived; })
         .sort(byOldestRoster)
         .forEach(function(p){ if(day.newc.length < NEW_N) takeNew(p); });
       return true;
@@ -611,7 +668,7 @@
       day.follow.concat(day.newc).forEach(function(r){ inRoster[r.pid] = 1; });
       (day.removed || []).forEach(function(pid){ inRoster[pid] = 1; });
       var cands = state.pool.filter(function(p){
-        if(inRoster[p.id]) return false;
+        if(inRoster[p.id] || p.archived) return false;
         return group === 'newc' ? p.origin === 'new' : p.origin !== 'new';
       });
       if(!cands.length) return null;
@@ -676,6 +733,7 @@
     function renderDatalist(){
       var seen = {}, html = '';
       state.pool.forEach(function(p){
+        if(p.archived) return;
         [p.name, p.alias].forEach(function(n){
           if(n && !seen[n]){ seen[n] = 1; html += '<option value="' + esc(n) + '"></option>'; }
         });
@@ -693,6 +751,7 @@
 
     /* ================= render: daily ================= */
     function renderProgress(){
+      var T = state.targets || TARGETS;
       var c = counts(state.viewDate);
       function stat(lbl, val, target, done){
         var pct = Math.min(100, Math.round(val / target * 100));
@@ -700,9 +759,22 @@
                '<div class="lbl">' + lbl + '</div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
       }
       $('progressRow').innerHTML =
-        stat('聯絡', c.contact, TARGETS.contact, c.contact >= TARGETS.contact) +
-        stat('約會', c.appt, TARGETS.appt, c.appt >= TARGETS.appt) +
-        stat('陌生認識', c.stranger, TARGETS.stranger, c.stranger >= TARGETS.stranger);
+        stat('聯絡', c.contact, T.contact, c.contact >= T.contact) +
+        stat('約會', c.appt, T.appt, c.appt >= T.appt) +
+        stat('陌生認識', c.stranger, T.stranger, c.stranger >= T.stranger);
+    }
+    function renderTargets(){
+      var T = state.targets || TARGETS;
+      $('targetRow').innerHTML = '<span>每日目標（改完即存）：</span>' +
+        '<span>聯絡 <input type="number" min="0" id="tg-contact" value="' + T.contact + '" aria-label="聯絡目標" /></span>' +
+        '<span>約會 <input type="number" min="0" id="tg-appt" value="' + T.appt + '" aria-label="約會目標" /></span>' +
+        '<span>陌生 <input type="number" min="0" id="tg-stranger" value="' + T.stranger + '" aria-label="陌生認識目標" /></span>';
+      ['contact','appt','stranger'].forEach(function(k){
+        $('tg-' + k).addEventListener('change', function(){
+          var v = parseInt(this.value, 10);
+          if(!isNaN(v) && v >= 0){ state.targets[k] = v; save(); renderProgress(); renderWeek(); toast('目標已更新'); }
+        });
+      });
     }
     function renderDateNav(){
       var ds = state.viewDate;
@@ -714,6 +786,7 @@
       var p = person(r.pid);
       if(!p) return '';
       var drawn = ui.drawnPid === p.id ? ' drawn' : '';
+      var arch = p.archived ? ' archived' : '';
       if(ui.editingPid === p.id){
         return '<div class="gcard prow' + drawn + '" data-pid="' + p.id + '"><div class="edit-box">' +
           '<div><label>主名</label><input id="ed-name" type="text" value="' + esc(p.name) + '" /></div>' +
@@ -724,7 +797,23 @@
           '<button class="ghost-btn" data-act="cancel-edit">取消</button></div>' +
           '</div></div>';
       }
-      return '<div class="gcard prow' + drawn + '" data-pid="' + p.id + '">' +
+      var noteKey = group + ':' + p.id;
+      var noteVal = (r.note != null && r.note !== '') ? r.note : (p.note || '');
+      var purposeHTML;
+      if(ui.noteKey === noteKey){
+        purposeHTML = '<div class="note-edit"><input id="note-inp" type="text" value="' + esc(noteVal) + '" placeholder="呢個人今日要做啲咩" />' +
+          '<button class="gold-btn" data-act="note-save" data-group="' + group + '" data-pid="' + p.id + '">儲存</button>' +
+          '<button class="ghost-btn" data-act="note-cancel">取消</button></div>';
+      } else {
+        purposeHTML = '<div class="purpose' + (noteVal ? '' : ' empty') + '" data-act="note" data-group="' + group + '" data-pid="' + p.id + '"><span class="pl">要做啲咩</span>' + (noteVal ? esc(noteVal) : '㩒嚟寫低') + '</div>';
+      }
+      var confirmHTML = '<div class="confirm-row">' +
+        '<button class="confirm-chip' + (p.confirm === 'same' ? ' on' : '') + '" data-act="cf-same" data-pid="' + p.id + '">照舊</button>' +
+        '<button class="confirm-chip' + (p.confirm === 'less' ? ' on' : '') + '" data-act="cf-less" data-pid="' + p.id + '">冇咁積極</button>' +
+        '<button class="confirm-chip' + (p.confirm === 'old' ? ' on-old' : '') + '" data-act="cf-old" data-pid="' + p.id + '">舊名單・唔使跟</button>' +
+        (p.archived ? '<span class="arch-tag">已收起・唔入抽人同揀人</span>' : '') +
+        '</div>';
+      return '<div class="gcard prow' + drawn + arch + '" data-pid="' + p.id + '">' +
         '<div class="line1">' +
           '<button class="star-btn ' + starBtnClass(p.type) + '" data-act="star" data-pid="' + p.id + '" aria-label="切換星色">' + starChar(p.type) + '</button>' +
           '<div class="pname"><div class="nm">' + esc(p.name) + '</div><div class="meta">' + metaLine(p) + '</div></div>' +
@@ -735,9 +824,10 @@
             '<input type="range" min="1" max="5" step="1" value="' + p.rel + '" data-rel="' + p.id + '" aria-label="關係值" />' +
             '<span class="rv" id="rv-' + p.id + '">' + p.rel + '</span></div>' +
           '<button class="mini-btn" data-act="focus" data-pid="' + p.id + '">焦點</button>' +
+          '<button class="mini-btn" data-act="swap" data-group="' + group + '" data-pid="' + p.id + '">換人</button>' +
           '<button class="mini-btn" data-act="edit" data-pid="' + p.id + '">改名</button>' +
           '<button class="mini-btn danger" data-act="remove" data-group="' + group + '" data-pid="' + p.id + '">刪除</button>' +
-        '</div></div>';
+        '</div>' + purposeHTML + confirmHTML + '</div>';
     }
     function groupHTML(title, rows, group, target){
       var done = rows.filter(function(r){ return r.st === 2; }).length;
@@ -793,6 +883,7 @@
           '<span class="pn">' + esc(p.name) + '</span>' +
           '<span class="pm">種類' + ['','一','二','三','四'][p.cat] + '・關係 ' + p.rel + '・' + agoStr(p.lastRoster) + '</span>' +
           '<span style="flex:1"></span>' +
+          (p.archived ? '<span class="arch-tag">舊名單・唔使跟</span><button class="flag-chip" data-act="unarchive" data-pid="' + p.id + '">恢復</button>' : '') +
           '<button class="flag-chip' + (p.follow ? ' on' : '') + '" data-act="flag-follow" data-pid="' + p.id + '">跟緊</button>' +
           '<button class="flag-chip' + (p.next ? ' on' : '') + '" data-act="flag-next" data-pid="' + p.id + '">有下一步</button>' +
           '</div>';
@@ -829,8 +920,45 @@
       var d = dayOf(ds);
       area.innerHTML = groupHTML('跟進組', d.follow, 'follow', FOLLOW_N) + groupHTML('新聯絡組', d.newc, 'newc', NEW_N);
     }
+    function renderClosing(){
+      var d = dayOf(state.viewDate);
+      $('closingArea').innerHTML =
+        '<div class="gcard close-card"><h3>今日收尾</h3>' +
+        '<div><button class="toggle-chip' + (d.video ? ' on' : '') + '" id="cl-video">' + (d.video ? '✓ ' : '') + '每日影片</button></div>' +
+        '<label for="cl-q1">睡前兩問（一）</label><input type="text" id="cl-q1" value="' + esc(d.q1) + '" placeholder="寫低答案" />' +
+        '<label for="cl-q2">睡前兩問（二）</label><input type="text" id="cl-q2" value="' + esc(d.q2) + '" placeholder="寫低答案" />' +
+        '<label>明日三件事</label>' +
+        [0,1,2].map(function(i){ return '<input type="text" id="cl-tom-' + i + '" value="' + esc(d.tom[i] || '') + '" placeholder="第 ' + (i+1) + ' 件" style="margin-bottom:7px" />'; }).join('') +
+        '</div>';
+      $('cl-video').addEventListener('click', function(){ d.video = !d.video; save(); renderClosing(); });
+      ['q1','q2'].forEach(function(k){
+        $('cl-' + k).addEventListener('change', function(){ d[k] = this.value; save(); });
+      });
+      [0,1,2].forEach(function(i){
+        $('cl-tom-' + i).addEventListener('change', function(){ d.tom[i] = this.value; save(); });
+      });
+    }
+    function renderWeek(){
+      var T = state.targets || TARGETS;
+      var hits = { contact:0, appt:0, stranger:0 };
+      var rows = '';
+      for(var i = 6; i >= 0; i--){
+        var ds = addDays(todayStr(), -i);
+        var c = counts(ds);
+        if(c.contact >= T.contact) hits.contact++;
+        if(c.appt >= T.appt) hits.appt++;
+        if(c.stranger >= T.stranger) hits.stranger++;
+        var chip = function(lbl, v, tg){
+          var hit = v >= tg;
+          return '<span class="week-chip' + (hit ? ' hit' : '') + '">' + lbl + ' <b>' + v + '/' + tg + '</b>' + (hit ? ' ✓' : '') + '</span>';
+        };
+        rows += '<div class="week-row"><span class="wd">' + ds.slice(5) + '（' + wkOf(ds).slice(2) + '）</span>' +
+          chip('聯絡', c.contact, T.contact) + chip('約會', c.appt, T.appt) + chip('陌生', c.stranger, T.stranger) + '</div>';
+      }
+      $('weekBody').innerHTML = '<p style="color:var(--mut);margin:4px 0 8px">近 7 日達標日數：聯絡 ' + hits.contact + ' 日・約會 ' + hits.appt + ' 日・陌生認識 ' + hits.stranger + ' 日</p>' + rows;
+    }
     function renderDaily(){
-      renderProgress(); renderDateNav(); renderRoster(); renderForms(); renderAppts(); renderPool(); renderLog(); renderDatalist();
+      renderProgress(); renderTargets(); renderDateNav(); renderRoster(); renderForms(); renderClosing(); renderWeek(); renderAppts(); renderPool(); renderLog(); renderDatalist();
     }
 
     /* ================= daily actions ================= */
@@ -915,7 +1043,7 @@
       if(!rows.length){ toast('名單冇人，抽唔到'); return; }
       var bag = [];
       rows.forEach(function(r){
-        var p = person(r.pid); if(!p) return;
+        var p = person(r.pid); if(!p || p.archived) return;
         var w = p.type !== 'none' ? 3 : 1;
         for(var i=0;i<w;i++) bag.push(p);
       });
@@ -1003,11 +1131,13 @@
       $('meetDetail').innerHTML =
         '<div class="gcard meet-detail"><h3>' + esc(m.name) + '</h3>' +
         '<div class="when">' + esc(m.when || '') + '・每星期出席情況按狀態記錄</div>' +
+        '<div class="poster-slot">海報位</div>' +
         countChips(m.people, M_STATUS, 'm', 2) +
         '<div class="plist" style="margin-top:10px">' + m.people.map(function(x){ return memberRowHTML(x, 'meet', m.id); }).join('') + '</div>' +
         (m.people.length ? '' : '<p style="color:var(--mut)">呢個會議未有人，用下面加人。</p>') +
         '<div class="add-inline"><input type="text" list="poolNames" id="meet-add-name" placeholder="加人入呢個會議" />' +
-        '<button class="gold-btn" id="meet-add-btn">＋ 加人</button></div></div>';
+        '<button class="gold-btn" id="meet-add-btn">＋ 加人</button></div>' +
+        '<div style="margin-top:10px"><button class="mini-btn danger" id="meet-del-btn">刪除呢個會議</button></div></div>';
       $('meet-add-btn').addEventListener('click', function(){
         var name = $('meet-add-name').value.trim();
         if(!name){ toast('入咗名先'); return; }
@@ -1015,6 +1145,11 @@
         var p = findByName(state.pool, name);
         m.people.push({ pid: p ? p.id : null, name:name, st:0 });
         save(); renderMeetings(); toast('已加 ' + name + ' 入「' + m.name + '」');
+      });
+      $('meet-del-btn').addEventListener('click', function(){
+        state.meetings = state.meetings.filter(function(x){ return x.id !== m.id; });
+        state.selMeeting = state.meetings.length ? state.meetings[0].id : null;
+        save(); renderMeetings(); toast('已刪除會議「' + m.name + '」');
       });
     }
 
@@ -1025,11 +1160,13 @@
         return '<div class="gcard offer-card"><div style="display:flex;align-items:flex-start;gap:8px">' +
           '<div style="flex:1"><h3>' + esc(o.name) + '</h3><div class="desc">' + esc(o.desc || '') + '</div></div>' +
           '<button class="mini-btn" data-offer-toggle="' + o.id + '">' + (open ? '摺起' : '展開') + '</button></div>' +
+          '<div class="poster-slot">海報位</div>' +
           countChips(o.people, O_STATUS, 'o', 2) +
           (open ? '<div class="plist" style="margin-top:10px">' + o.people.map(function(x){ return memberRowHTML(x, 'offer', o.id); }).join('') + '</div>' +
             (o.people.length ? '' : '<p style="color:var(--mut)">呢張優惠卡未有人，用下面加人。</p>') +
             '<div class="add-inline"><input type="text" list="poolNames" id="offer-add-' + o.id + '" placeholder="加人入呢張優惠卡" />' +
             '<button class="gold-btn" data-offer-add="' + o.id + '">＋ 加人</button></div>' : '') +
+          '<div style="margin-top:10px"><button class="mini-btn danger" data-offer-del="' + o.id + '">刪除呢張優惠</button></div>' +
           '</div>';
       }).join('') || '<p style="color:var(--mut)">未有優惠，用下面表格新增。</p>';
       document.querySelectorAll('[data-offer-toggle]').forEach(function(b){
@@ -1037,6 +1174,14 @@
           var id = this.getAttribute('data-offer-toggle');
           ui.openOffers[id] = !ui.openOffers[id];
           renderOffers();
+        });
+      });
+      document.querySelectorAll('[data-offer-del]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var id = this.getAttribute('data-offer-del');
+          var o = null; state.offers.forEach(function(x){ if(x.id === id) o = x; });
+          state.offers = state.offers.filter(function(x){ return x.id !== id; });
+          save(); renderOffers(); toast('已刪除優惠「' + (o ? o.name : '') + '」');
         });
       });
       document.querySelectorAll('[data-offer-add]').forEach(function(b){
@@ -1126,6 +1271,61 @@
           save(); renderAll();
           toast(added ? '已移除 ' + p.name + '，即刻補返 ' + added.name : '已移除 ' + p.name + '（池入面暫時冇人可補）');
         }
+      }
+      else if(act === 'swap' && p){
+        var grp = t.getAttribute('data-group');
+        var ri = -1;
+        day[grp].forEach(function(r, i){ if(r.pid === pid) ri = i; });
+        if(ri >= 0){
+          var cand = pickRefill(ds, grp, p.cat);
+          if(!cand){ toast('池入面冇其他合資格人選可換'); }
+          else {
+            day[grp][ri] = { pid: cand.id, st: 0, note: '' };
+            if(!day.removed) day.removed = [];
+            if(day.removed.indexOf(pid) < 0) day.removed.push(pid);
+            cand.lastRoster = ds;
+            if(ui.drawnPid === pid) ui.drawnPid = null;
+            if(ui.noteKey) ui.noteKey = null;
+            save(); renderAll();
+            toast('已換人：' + p.name + ' → ' + cand.name + '（狀態重置做未揾）');
+          }
+        }
+      }
+      else if(act === 'note'){
+        ui.noteKey = t.getAttribute('data-group') + ':' + pid;
+        renderRoster();
+        var ni = $('note-inp'); if(ni){ ni.focus(); ni.select(); }
+      }
+      else if(act === 'note-cancel'){ ui.noteKey = null; renderRoster(); }
+      else if(act === 'note-save' && p){
+        var grp2 = t.getAttribute('data-group');
+        var rowN = null;
+        day[grp2].forEach(function(r){ if(r.pid === pid) rowN = r; });
+        var inpN = $('note-inp');
+        if(rowN && inpN){ rowN.note = inpN.value.trim(); }
+        ui.noteKey = null;
+        save(); renderAll(); toast('已儲存「要做啲咩」');
+      }
+      else if(act === 'cf-same' && p){
+        p.confirm = 'same'; p.archived = false;
+        save(); renderAll(); toast(p.name + '：照舊，維持跟進');
+      }
+      else if(act === 'cf-less' && p){
+        p.confirm = 'less'; p.archived = false;
+        if(p.type !== 'none'){
+          state.starLog.unshift({ pid:p.id, name:p.name, from:p.type, to:'none', at: new Date().toLocaleString('zh-Hant') });
+          if(state.starLog.length > 60) state.starLog.length = 60;
+          p.type = 'none';
+        }
+        save(); renderAll(); toast(p.name + '：冇咁積極，粒星已攞走');
+      }
+      else if(act === 'cf-old' && p){
+        p.confirm = 'old'; p.archived = true;
+        save(); renderAll(); toast(p.name + '：已收起（舊名單・唔使跟），唔再入抽人同揀人名單；要成行刪走就㩒刪除');
+      }
+      else if(act === 'unarchive' && p){
+        p.archived = false; p.confirm = 'same';
+        save(); renderAll(); toast(p.name + ' 已恢復，會再入名單同抽人');
       }
       else if(act === 'del-appt'){
         day.appts.splice(parseInt(t.getAttribute('data-i'), 10), 1);
