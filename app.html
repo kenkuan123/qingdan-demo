@@ -46,9 +46,9 @@
       button{ cursor:pointer; }
       button, [role="button"], select, input:not([type="range"]){ min-height:2.375rem; }
 
-      .wrap{ max-width:760px; margin:0 auto; padding:18px 14px 90px; }
+      .wrap{ max-width:760px; margin:0 auto; padding:10px 12px 70px; }
 
-      /* ---------- header ---------- */
+      /* ---------- compact header ---------- */
       .page-title{
         font-family:"Noto Serif TC", "Noto Sans TC", serif;
         font-weight:900;
@@ -59,6 +59,72 @@
         text-shadow:0 0 16px rgba(201,162,77,.38), 0 0 34px rgba(94,168,221,.22);
       }
       .page-sub{ color:var(--mut); font-size:13px; margin:0 2px 14px; }
+      .compact-head{ margin:2px 0 10px; }
+      .head-row{ display:flex; align-items:center; gap:8px; }
+      .date-cluster{ display:flex; align-items:center; gap:6px; flex:1; min-width:0; position:relative; }
+      .date-pill{
+        border:1px solid rgba(201,162,77,.45); border-radius:20px; min-height:36px;
+        padding:6px 13px; font-weight:900; font-size:13.5px; color:#f3e3b3; white-space:nowrap;
+        background:linear-gradient(135deg, rgba(94,168,221,.28), rgba(201,162,77,.22));
+      }
+      .arrow-btn{
+        flex:0 0 auto; width:36px; height:36px; min-height:36px; border-radius:10px;
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.32);
+        color:var(--ink); font-size:20px; font-weight:900; line-height:1; padding:0;
+      }
+      .arrow-btn:active{ background:rgba(255,255,255,.13); }
+      .today-mini{
+        flex:0 0 auto; min-height:36px; border-radius:10px; padding:5px 10px;
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.32);
+        color:var(--ink); font-weight:700; font-size:13px;
+      }
+      .date-pick-hidden{ position:absolute; left:10px; bottom:0; width:10px; height:10px; opacity:0; pointer-events:none; border:0; padding:0; min-height:0 !important; }
+      .ring-box{ flex:0 0 auto; width:58px; height:58px; position:relative; }
+      .ring-box svg{ display:block; transform:rotate(-90deg); }
+      .ring-txt{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.05; }
+      .ring-txt b{ font-size:14px; color:#fff; }
+      .ring-txt span{ font-size:9.5px; color:var(--mut); }
+      .title-line{ display:flex; align-items:baseline; gap:8px; margin-top:7px; flex-wrap:wrap; }
+      .compact-title{
+        font-family:"Noto Serif TC", serif; font-weight:900; font-size:21px; letter-spacing:.05em;
+        color:var(--gold2); margin:0; text-shadow:0 0 12px rgba(201,162,77,.32);
+      }
+      .compact-sub{ color:var(--mut); font-size:12px; flex:1; min-width:140px; }
+      .target-toggle{ min-height:32px !important; padding:3px 10px; font-size:12.5px; }
+      .target-panel{
+        margin-top:8px; padding:10px 12px; border-radius:12px;
+        border:1px solid rgba(120,150,190,.25); background:rgba(255,255,255,.03);
+      }
+
+      /* ---------- quota summary cards ---------- */
+      .qcard{ margin-bottom:10px; overflow:hidden; }
+      .qhead{
+        width:100%; display:flex; align-items:center; gap:10px; text-align:left;
+        background:transparent; border:0; color:var(--ink); padding:11px 14px 10px; min-height:54px;
+      }
+      .qleft{ flex:1; min-width:0; display:block; }
+      .qtitle{ display:block; font-size:17px; font-weight:900; color:#fff; line-height:1.25; }
+      .qsub{ display:block; color:var(--mut); font-size:12.5px; margin-top:2px; line-height:1.5; }
+      .qsub b{ color:var(--gold2); }
+      .qbig{ flex:0 0 auto; font-size:27px; font-weight:900; line-height:1; white-space:nowrap; }
+      .qbig .num{ color:var(--gold2); text-shadow:0 0 10px rgba(201,162,77,.30); }
+      .qbig .of{ color:#fff; font-size:16px; font-weight:700; }
+      .qbig.done .num{ color:var(--green); text-shadow:0 0 10px rgba(76,195,138,.30); }
+      .qbig-text{ font-size:19px; color:var(--mut); }
+      .qbig-text.on{ color:var(--green); }
+      .qchev{ flex:0 0 auto; color:var(--mut); transition:transform .2s; }
+      .qcard.open .qchev{ transform:rotate(180deg); }
+      .qbody{ display:none; padding:2px 12px 12px; }
+      .qcard.open .qbody{ display:block; }
+      .qcnt{ color:var(--mut); font-size:12.5px; margin:2px 2px 8px; }
+      .inner-form{ border-top:1px solid rgba(255,255,255,.08); margin-top:12px; padding-top:12px; }
+      .inner-form h4{ margin:0 0 9px; font-size:14.5px; font-weight:900; color:#fff; }
+      .inner-form label{ font-size:12.5px; color:var(--mut); display:block; margin-bottom:3px; }
+      .inner-form input{
+        background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35);
+        border-radius:10px; padding:8px 11px; color:var(--ink); width:100%;
+      }
+      .util-row{ display:flex; gap:9px; flex-wrap:wrap; margin:2px 0 4px; }
 
       /* gradient-border card: colour lives on the rim only, centre stays hollow/dark */
       .gcard{
@@ -72,18 +138,18 @@
 
       /* ---------- tabs ---------- */
       .tabs{
-        position:sticky; top:8px; z-index:30;
-        display:flex; gap:8px; padding:6px;
-        border-radius:14px;
+        position:sticky; top:6px; z-index:30;
+        display:flex; gap:6px; padding:4px;
+        border-radius:12px;
         background:rgba(9,14,26,.88);
         backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
         border:1px solid rgba(120,150,190,.22);
-        margin-bottom:14px;
+        margin-bottom:10px;
       }
       .tab-btn{
-        flex:1; border:1px solid transparent; border-radius:10px;
+        flex:1; border:1px solid transparent; border-radius:9px;
         background:transparent; color:var(--mut);
-        font-weight:700; font-size:16px; padding:9px 4px; min-height:44px;
+        font-weight:700; font-size:15px; padding:6px 4px; min-height:38px;
       }
       .tab-btn[aria-selected="true"]{
         color:var(--gold2);
@@ -218,7 +284,7 @@
       .warn-box .row{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
 
       /* ---------- collapsible ---------- */
-      .collapse{ margin-top:14px; }
+      .collapse{ margin-top:10px; }
       .collapse > button.chead{
         width:100%; display:flex; align-items:center; gap:8px; text-align:left;
         background:transparent; border:0; color:#fff; font-weight:900; font-size:16px; padding:12px 14px; min-height:48px;
@@ -362,29 +428,32 @@
   </head>
   <body>
     <div class="wrap">
-      <h1 class="page-title">十三一清單</h1>
-      <p class="page-sub">每日人名跟進 — 名單自動排好，㩒住更新就得。</p>
-
       <nav class="tabs" role="tablist" aria-label="分頁">
         <button class="tab-btn" role="tab" id="tabbtn-daily" aria-selected="true" data-tab="daily">每日清單</button>
         <button class="tab-btn" role="tab" id="tabbtn-meet" aria-selected="false" data-tab="meet">推會議</button>
         <button class="tab-btn" role="tab" id="tabbtn-offer" aria-selected="false" data-tab="offer">推優惠</button>
       </nav>
 
+      <header class="compact-head">
+        <div class="head-row">
+          <div class="date-cluster">
+            <button class="date-pill" id="datePillBtn" aria-label="揀日期"><span id="datePillText"></span></button>
+            <button class="arrow-btn" id="datePrev" aria-label="上一日">‹</button>
+            <button class="arrow-btn" id="dateNext" aria-label="下一日">›</button>
+            <button class="today-mini hidden" id="dateToday">今日</button>
+          </div>
+          <div class="ring-box" id="ringBox" aria-label="今日完成度"></div>
+        </div>
+        <div class="title-line">
+          <h1 class="compact-title">十三一清單</h1>
+          <span class="compact-sub">每日人名跟進 — 名單自動排好，㩒住更新就得</span>
+          <button class="mini-btn target-toggle" id="btnTargetToggle" aria-expanded="false">改目標</button>
+        </div>
+        <div class="target-panel hidden" id="targetPanel"><div class="target-row" id="targetRow" style="margin:0"></div></div>
+      </header>
+
       <!-- ============ 每日清單 ============ -->
       <section id="tab-daily">
-        <div class="progress-row" id="progressRow"></div>
-        <div class="target-row" id="targetRow"></div>
-
-        <div class="gcard datenav">
-          <button class="ghost-btn" id="datePrev" aria-label="上一日">‹ 前一日</button>
-          <div class="dlabel"><span id="dateLabel"></span><span class="wk" id="dateWk"></span></div>
-          <div class="sp"></div>
-          <input type="date" id="datePick" aria-label="揀日期" />
-          <button class="ghost-btn" id="dateToday">今日</button>
-          <button class="ghost-btn" id="dateNext" aria-label="下一日">後一日 ›</button>
-        </div>
-
         <div class="gcard draw-banner" id="drawBanner">
           <div>
             <div class="dl">隨機抽中 — 由呢位開始</div>
@@ -395,23 +464,57 @@
           <button class="mini-btn" id="drawClose">收起</button>
         </div>
 
-        <div id="rosterArea"></div>
-
-        <div class="sec-head">
-          <h2>加人 / 記錄</h2><span class="cnt">㩒開嚟用</span>
+        <div class="gcard qcard open" id="qc-contact">
+          <button class="qhead" data-collapse="qc-contact" aria-label="展開或摺起今日聯絡名單">
+            <span class="qleft"><span class="qtitle">今日聯絡名單</span><span class="qsub" id="qsub-contact"></span></span>
+            <span class="qbig" id="qbig-contact"></span><span class="chev qchev">▾</span>
+          </button>
+          <div class="qbody">
+            <div id="rosterFollow"></div>
+            <div id="formContactSlot"></div>
+          </div>
         </div>
+
+        <div class="gcard qcard" id="qc-appt">
+          <button class="qhead" data-collapse="qc-appt" aria-label="展開或摺起約會">
+            <span class="qleft"><span class="qtitle">約會</span><span class="qsub" id="qsub-appt"></span></span>
+            <span class="qbig" id="qbig-appt"></span><span class="chev qchev">▾</span>
+          </button>
+          <div class="qbody">
+            <div id="apptListInside"></div>
+            <div id="formApptSlot"></div>
+          </div>
+        </div>
+
+        <div class="gcard qcard" id="qc-stranger">
+          <button class="qhead" data-collapse="qc-stranger" aria-label="展開或摺起陌生認識">
+            <span class="qleft"><span class="qtitle">陌生認識</span><span class="qsub" id="qsub-stranger"></span></span>
+            <span class="qbig" id="qbig-stranger"></span><span class="chev qchev">▾</span>
+          </button>
+          <div class="qbody">
+            <div id="rosterNew"></div>
+            <div id="formNewSlot"></div>
+          </div>
+        </div>
+
+        <div class="gcard qcard" id="qc-video">
+          <button class="qhead" data-collapse="qc-video" aria-label="展開或摺起每日短片">
+            <span class="qleft"><span class="qtitle">每日短片</span><span class="qsub" id="qsub-video"></span></span>
+            <span class="qbig qbig-text" id="qbig-video"></span><span class="chev qchev">▾</span>
+          </button>
+          <div class="qbody"><div id="videoBody"></div></div>
+        </div>
+
         <div id="formsArea"></div>
 
-        <div id="closingArea"></div>
+        <div class="gcard collapse" id="closingCollapse">
+          <button class="chead" data-collapse="closingCollapse">今日收尾 <span style="color:var(--mut);font-size:13px">（睡前兩問・明日三件事）</span><span class="chev">▾</span></button>
+          <div class="cbody" id="closingBody"></div>
+        </div>
 
         <div class="gcard collapse" id="weekCollapse">
           <button class="chead" data-collapse="weekCollapse">近 7 日完成度 <span style="color:var(--mut);font-size:13px">（三個目標達標日數）</span><span class="chev">▾</span></button>
           <div class="cbody" id="weekBody"></div>
-        </div>
-
-        <div class="gcard collapse" id="apptCollapse">
-          <button class="chead" data-collapse="apptCollapse">今日約會記錄 <span class="cnt" id="apptCnt" style="color:var(--mut);font-size:13px"></span><span class="chev">▾</span></button>
-          <div class="cbody" id="apptBody"></div>
         </div>
 
         <div class="gcard collapse" id="poolCollapse">
@@ -750,18 +853,37 @@
     }
 
     /* ================= render: daily ================= */
+    function fmtPill(ds){
+      var d = new Date(ds + 'T12:00:00');
+      var s = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日・' + wkOf(ds);
+      if(ds === todayStr()) s += '・今日';
+      return s;
+    }
     function renderProgress(){
       var T = state.targets || TARGETS;
-      var c = counts(state.viewDate);
-      function stat(lbl, val, target, done){
-        var pct = Math.min(100, Math.round(val / target * 100));
-        return '<div class="gcard stat' + (done ? ' done' : '') + '"><div class="big"><span class="num">' + val + '</span> <span class="of">/ ' + target + '</span></div>' +
-               '<div class="lbl">' + lbl + '</div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+      var ds = state.viewDate;
+      var c = counts(ds);
+      var d = dayOf(ds);
+      var attempted = d.follow.filter(function(r){ return r.st > 0; }).length;
+      var notYet = d.follow.filter(function(r){ return r.st === 0; }).length;
+      function big(val, target, done){
+        return '<span class="num">' + val + '</span> <span class="of">/ ' + target + '</span>';
       }
-      $('progressRow').innerHTML =
-        stat('聯絡', c.contact, T.contact, c.contact >= T.contact) +
-        stat('約會', c.appt, T.appt, c.appt >= T.appt) +
-        stat('陌生認識', c.stranger, T.stranger, c.stranger >= T.stranger);
+      var bc = $('qbig-contact'); bc.innerHTML = big(c.contact, T.contact, c.contact >= T.contact); bc.classList.toggle('done', c.contact >= T.contact);
+      $('qsub-contact').innerHTML = '出咗手 ' + attempted + ' / ' + T.contact + '・仲有 ' + notYet + ' 人未揾<br />今日聯絡數 <b>' + c.contact + '</b> / ' + T.contact;
+      var ba = $('qbig-appt'); ba.innerHTML = big(c.appt, T.appt, c.appt >= T.appt); ba.classList.toggle('done', c.appt >= T.appt);
+      $('qsub-appt').textContent = c.appt >= T.appt ? '已達標 ✓' : '仲差 ' + (T.appt - c.appt) + ' 個';
+      var bs = $('qbig-stranger'); bs.innerHTML = big(c.stranger, T.stranger, c.stranger >= T.stranger); bs.classList.toggle('done', c.stranger >= T.stranger);
+      $('qsub-stranger').textContent = c.stranger >= T.stranger ? '已達標 ✓' : '仲差 ' + (T.stranger - c.stranger) + ' 個';
+      var bv = $('qbig-video'); bv.textContent = d.video ? '已出' : '未出'; bv.classList.toggle('on', !!d.video);
+      $('qsub-video').textContent = d.video ? '今日短片已出 ✓' : '今日短片未出';
+      var doneCats = (c.contact >= T.contact ? 1 : 0) + (c.appt >= T.appt ? 1 : 0) + (c.stranger >= T.stranger ? 1 : 0) + (d.video ? 1 : 0);
+      var frac = doneCats / 4;
+      var circ = 2 * Math.PI * 24;
+      $('ringBox').innerHTML =
+        '<svg width="58" height="58" viewBox="0 0 58 58"><circle cx="29" cy="29" r="24" fill="none" stroke="rgba(120,150,190,.25)" stroke-width="5"></circle>' +
+        '<circle cx="29" cy="29" r="24" fill="none" stroke="var(--gold)" stroke-width="5" stroke-linecap="round" stroke-dasharray="' + circ + '" stroke-dashoffset="' + (circ * (1 - frac)) + '"></circle></svg>' +
+        '<div class="ring-txt"><b>' + doneCats + '/4</b><span>完成</span></div>';
     }
     function renderTargets(){
       var T = state.targets || TARGETS;
@@ -778,9 +900,8 @@
     }
     function renderDateNav(){
       var ds = state.viewDate;
-      $('dateLabel').textContent = ds;
-      $('dateWk').textContent = wkOf(ds) + (ds === todayStr() ? '・今日' : '');
-      $('datePick').value = ds;
+      $('datePillText').textContent = fmtPill(ds);
+      $('dateToday').classList.toggle('hidden', ds === todayStr());
     }
     function rowHTML(r, group){
       var p = person(r.pid);
@@ -837,20 +958,23 @@
       return h;
     }
     function renderForms(){
-      $('formsArea').innerHTML =
-        '<div class="gcard form-card"><h3>＋ 新增聯絡（入跟進組）</h3>' +
-          '<div class="form-grid"><div><label>姓名</label><input id="f-contact-name" type="text" list="poolNames" placeholder="打名，池入面嘅人會自動建議" /></div></div>' +
+      $('formContactSlot').innerHTML =
+        '<div class="inner-form"><h4>＋ 新增聯絡（入跟進組）</h4>' +
+          '<div><label for="f-contact-name">姓名</label><input id="f-contact-name" type="text" list="poolNames" placeholder="打名，池入面嘅人會自動建議" /></div>' +
           '<div id="warn-contact"></div>' +
-          '<div style="margin-top:12px"><button class="gold-btn" id="btn-contact">加入並標為已完成</button></div></div>' +
-        '<div class="gcard form-card"><h3>＋ 新增約會</h3>' +
-          '<div class="form-grid two"><div><label>姓名</label><input id="f-appt-name" type="text" list="poolNames" placeholder="約咗邊個" /></div>' +
-          '<div><label>時間</label><input id="f-appt-time" type="time" /></div></div>' +
-          '<div style="margin-top:12px"><button class="gold-btn" id="btn-appt">儲存約會</button></div></div>' +
-        '<div class="gcard form-card"><h3>＋ 新增新聯絡（入新聯絡組）</h3>' +
-          '<div class="form-grid"><div><label>姓名</label><input id="f-new-name" type="text" list="poolNames" placeholder="新認識嘅人" /></div></div>' +
+          '<div style="margin-top:10px"><button class="gold-btn" id="btn-contact">加入並標為已完成</button></div></div>';
+      $('formApptSlot').innerHTML =
+        '<div class="inner-form"><h4>＋ 新增約會</h4>' +
+          '<div class="form-grid two"><div><label for="f-appt-name">姓名</label><input id="f-appt-name" type="text" list="poolNames" placeholder="約咗邊個" /></div>' +
+          '<div><label for="f-appt-time">時間</label><input id="f-appt-time" type="time" /></div></div>' +
+          '<div style="margin-top:10px"><button class="gold-btn" id="btn-appt">儲存約會</button></div></div>';
+      $('formNewSlot').innerHTML =
+        '<div class="inner-form"><h4>＋ 新增新聯絡（入新聯絡組）</h4>' +
+          '<div><label for="f-new-name">姓名</label><input id="f-new-name" type="text" list="poolNames" placeholder="新認識嘅人" /></div>' +
           '<div id="warn-new"></div>' +
-          '<div style="margin-top:12px"><button class="gold-btn" id="btn-new">加入並標為已完成</button></div></div>' +
-        '<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:2px">' +
+          '<div style="margin-top:10px"><button class="gold-btn" id="btn-new">加入並標為已完成</button></div></div>';
+      $('formsArea').innerHTML =
+        '<div class="util-row">' +
           '<button class="blue-btn" id="btn-draw">🎲 隨機抽人</button>' +
           '<button class="ghost-btn" id="btn-expand-all">全部展開</button></div>';
       $('btn-contact').addEventListener('click', addContact);
@@ -858,18 +982,17 @@
       $('btn-new').addEventListener('click', addNewContact);
       $('btn-draw').addEventListener('click', drawRandom);
       $('btn-expand-all').addEventListener('click', function(){
-        document.querySelectorAll('.collapse').forEach(function(c){ c.classList.add('open'); });
+        document.querySelectorAll('.collapse, .qcard').forEach(function(c){ c.classList.add('open'); });
       });
     }
     function renderAppts(){
       var d = dayOf(state.viewDate);
-      $('apptCnt').textContent = d.appts.length ? '（' + d.appts.length + ' 個）' : '';
-      $('apptBody').innerHTML = d.appts.length
+      $('apptListInside').innerHTML = d.appts.length
         ? d.appts.map(function(a, i){
             return '<div class="appt-row"><span class="tm">' + esc(a.time || '—') + '</span><span style="flex:1">' + esc(a.name) + '</span>' +
                    '<button class="mini-btn danger" data-act="del-appt" data-i="' + i + '">刪除</button></div>';
           }).join('')
-        : '<p style="color:var(--mut);margin:6px 0">呢日未有約會記錄。用上面「＋ 新增約會」加。</p>';
+        : '<p style="color:var(--mut);margin:6px 0">呢日未有約會記錄。用下面「＋ 新增約會」加。</p>';
     }
     function renderPool(){
       var order = { 3:0, 2:1, 4:2, 1:3 };
@@ -908,29 +1031,39 @@
     }
     function renderRoster(){
       var ds = state.viewDate;
-      var area = $('rosterArea');
       if(!hasRoster(ds)){
-        area.innerHTML = '<div class="gcard empty-card"><p>呢日未有名單。</p>' +
+        $('rosterFollow').innerHTML = '<div class="empty-card" style="padding:16px 10px;text-align:center"><p style="color:var(--mut);margin:0 0 12px">呢日未有名單。</p>' +
           '<button class="gold-btn" id="btn-autofill">自動排今日名單</button></div>';
+        $('rosterNew').innerHTML = '';
         $('btn-autofill').addEventListener('click', function(){
           if(autofill(ds)){ save(); renderAll(); toast('已自動排好名單：跟進 ' + dayOf(ds).follow.length + ' 人＋新聯絡 ' + dayOf(ds).newc.length + ' 人'); }
         });
         return;
       }
       var d = dayOf(ds);
-      area.innerHTML = groupHTML('跟進組', d.follow, 'follow', FOLLOW_N) + groupHTML('新聯絡組', d.newc, 'newc', NEW_N);
+      function listHTML(rows, group, target){
+        var done = rows.filter(function(r){ return r.st === 2; }).length;
+        var h = '<div class="qcnt">' + rows.length + ' / ' + target + ' 人・已完成 ' + done + '</div>';
+        if(!rows.length) h += '<p style="color:var(--mut);margin:4px 2px 8px">呢組暫時冇人。</p>';
+        else h += '<div class="plist">' + rows.map(function(r){ return rowHTML(r, group); }).join('') + '</div>';
+        return h;
+      }
+      $('rosterFollow').innerHTML = listHTML(d.follow, 'follow', FOLLOW_N);
+      $('rosterNew').innerHTML = listHTML(d.newc, 'newc', NEW_N);
     }
     function renderClosing(){
       var d = dayOf(state.viewDate);
-      $('closingArea').innerHTML =
-        '<div class="gcard close-card"><h3>今日收尾</h3>' +
-        '<div><button class="toggle-chip' + (d.video ? ' on' : '') + '" id="cl-video">' + (d.video ? '✓ ' : '') + '每日影片</button></div>' +
-        '<label for="cl-q1">睡前兩問（一）</label><input type="text" id="cl-q1" value="' + esc(d.q1) + '" placeholder="寫低答案" />' +
+      $('videoBody').innerHTML =
+        '<div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap"><button class="toggle-chip' + (d.video ? ' on' : '') + '" id="cl-video">' + (d.video ? '✓ 已出' : '標記已出') + '</button>' +
+        '<span style="color:var(--mut);font-size:13px">' + (d.video ? '今日短片已出，好嘢。' : '出咗片就㩒呢個掣標記。') + '</span></div>';
+      $('closingBody').innerHTML =
+        '<div class="close-card" style="padding:0;margin:0">' +
+        '<label for="cl-q1" style="margin-top:2px">睡前兩問（一）</label><input type="text" id="cl-q1" value="' + esc(d.q1) + '" placeholder="寫低答案" />' +
         '<label for="cl-q2">睡前兩問（二）</label><input type="text" id="cl-q2" value="' + esc(d.q2) + '" placeholder="寫低答案" />' +
         '<label>明日三件事</label>' +
         [0,1,2].map(function(i){ return '<input type="text" id="cl-tom-' + i + '" value="' + esc(d.tom[i] || '') + '" placeholder="第 ' + (i+1) + ' 件" style="margin-bottom:7px" />'; }).join('') +
         '</div>';
-      $('cl-video').addEventListener('click', function(){ d.video = !d.video; save(); renderClosing(); });
+      $('cl-video').addEventListener('click', function(){ d.video = !d.video; save(); renderClosing(); renderProgress(); });
       ['q1','q2'].forEach(function(k){
         $('cl-' + k).addEventListener('change', function(){ d[k] = this.value; save(); });
       });
@@ -1377,10 +1510,32 @@
         window.scrollTo({ top:0, behavior:'smooth' });
       });
     });
+    $('btnTargetToggle').addEventListener('click', function(){
+      var panel = $('targetPanel');
+      var open = panel.classList.toggle('hidden') === false;
+      this.setAttribute('aria-expanded', open ? 'true' : 'false');
+      this.textContent = open ? '收起目標' : '改目標';
+    });
+    $('datePillBtn').addEventListener('click', function(){
+      var pick = document.createElement('input');
+      pick.type = 'date';
+      pick.value = state.viewDate;
+      pick.setAttribute('aria-label', '揀日期');
+      pick.style.cssText = 'position:fixed;left:12px;top:64px;width:44px;height:44px;opacity:.02;z-index:99;';
+      document.body.appendChild(pick);
+      var cleaned = false;
+      function cleanup(){ if(!cleaned){ cleaned = true; if(pick.parentNode) pick.parentNode.removeChild(pick); } }
+      pick.addEventListener('change', function(){
+        if(pick.value){ state.viewDate = pick.value; ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); }
+        cleanup();
+      });
+      pick.addEventListener('blur', function(){ setTimeout(cleanup, 400); });
+      if(pick.showPicker){ try{ pick.showPicker(); }catch(e){ pick.focus(); pick.click(); } }
+      else { pick.focus(); pick.click(); }
+    });
     $('datePrev').addEventListener('click', function(){ state.viewDate = addDays(state.viewDate, -1); ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); });
     $('dateNext').addEventListener('click', function(){ state.viewDate = addDays(state.viewDate, 1); ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); });
     $('dateToday').addEventListener('click', function(){ state.viewDate = todayStr(); ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); });
-    $('datePick').addEventListener('change', function(){ if(this.value){ state.viewDate = this.value; ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); } });
     $('addMeetBtn').addEventListener('click', function(){
       var name = $('newMeetName').value.trim();
       if(!name){ toast('入咗會議名先'); return; }
