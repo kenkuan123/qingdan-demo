@@ -12,121 +12,75 @@
     <style>
       :root{
         color-scheme: dark;
-        --bg:#070b14;
-        --panel:#0d1526;
-        --panel2:#101a30;
+        --bg:#060a13;
+        --panel:#0b1322;
+        --panel2:#0e1830;
         --ink:#eef2f8;
-        --mut:#9db0c6;
-        --mut2:#6e8099;
+        --mut:#93a7c0;
+        --mut2:#647690;
         --gold:#c9a24d;
-        --gold2:#e8cb7d;
+        --gold2:#eccd6f;
+        --goldbright:#f2c93c;
         --blue:#5ea8dd;
+        --cyan:#3ec6dd;
         --teal:#6dabb9;
         --green:#4cc38a;
-        --pink:#e58aa5;
         --amber:#d99a3d;
-        --plum:#a08bb5;
+        --pink:#e58aa5;
         --radius:16px;
       }
       *{ box-sizing:border-box; }
       html{ -webkit-text-size-adjust:100%; }
       body{
         margin:0;
-        background:
-          radial-gradient(120% 60% at 0% 0%, rgba(94,168,221,.10), transparent 55%),
-          radial-gradient(120% 60% at 100% 0%, rgba(201,162,77,.08), transparent 55%),
-          var(--bg);
+        background:var(--bg);
         color:var(--ink);
         font-family:"Noto Sans TC", system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
         font-size:16px;
         line-height:1.5;
         min-height:100vh;
       }
-      button, input, select{ font:inherit; color:inherit; }
+      body::before{
+        content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+        background-image:
+          linear-gradient(rgba(110,160,220,.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(110,160,220,.05) 1px, transparent 1px);
+        background-size:44px 44px;
+      }
+      button, input, select, textarea{ font:inherit; color:inherit; }
       button{ cursor:pointer; }
-      button, [role="button"], select, input:not([type="range"]){ min-height:2.375rem; }
+      button, select, input:not([type="range"]){ min-height:2.375rem; }
 
-      .wrap{ max-width:760px; margin:0 auto; padding:10px 12px 70px; }
+      .wrap{ position:relative; z-index:1; max-width:760px; margin:0 auto; padding:10px 12px 70px; }
 
-      /* ---------- compact header ---------- */
-      .page-title{
-        font-family:"Noto Serif TC", "Noto Sans TC", serif;
-        font-weight:900;
-        font-size:clamp(26px, 6.4vw, 36px);
-        letter-spacing:.06em;
+      .site-name{
+        font-family:"Noto Serif TC", serif; font-weight:900; font-size:15px;
+        letter-spacing:.35em; color:var(--gold2); margin:2px 2px 8px; opacity:.92;
+      }
+
+      /* ---------- capsule tabs ---------- */
+      .tabs{
+        position:sticky; top:6px; z-index:30;
+        display:flex; gap:4px; padding:5px;
+        border-radius:999px;
+        background:rgba(9,14,26,.92);
+        backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+        border:1px solid rgba(120,150,190,.25);
+        margin-bottom:14px;
+      }
+      .tab-btn{
+        flex:1; border:1px solid transparent; border-radius:999px;
+        background:transparent; color:var(--mut);
+        font-weight:900; font-size:15.5px; padding:7px 4px; min-height:42px;
+      }
+      .tab-btn[aria-selected="true"]{
         color:var(--gold2);
-        margin:6px 2px 2px;
-        text-shadow:0 0 16px rgba(201,162,77,.38), 0 0 34px rgba(94,168,221,.22);
-      }
-      .page-sub{ color:var(--mut); font-size:13px; margin:0 2px 14px; }
-      .compact-head{ margin:2px 0 10px; }
-      .head-row{ display:flex; align-items:center; gap:8px; }
-      .date-cluster{ display:flex; align-items:center; gap:6px; flex:1; min-width:0; position:relative; }
-      .date-pill{
-        border:1px solid rgba(201,162,77,.45); border-radius:20px; min-height:36px;
-        padding:6px 13px; font-weight:900; font-size:13.5px; color:#f3e3b3; white-space:nowrap;
-        background:linear-gradient(135deg, rgba(94,168,221,.28), rgba(201,162,77,.22));
-      }
-      .arrow-btn{
-        flex:0 0 auto; width:36px; height:36px; min-height:36px; border-radius:10px;
-        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.32);
-        color:var(--ink); font-size:20px; font-weight:900; line-height:1; padding:0;
-      }
-      .arrow-btn:active{ background:rgba(255,255,255,.13); }
-      .today-mini{
-        flex:0 0 auto; min-height:36px; border-radius:10px; padding:5px 10px;
-        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.32);
-        color:var(--ink); font-weight:700; font-size:13px;
-      }
-      .date-pick-hidden{ position:absolute; left:10px; bottom:0; width:10px; height:10px; opacity:0; pointer-events:none; border:0; padding:0; min-height:0 !important; }
-      .ring-box{ flex:0 0 auto; width:58px; height:58px; position:relative; }
-      .ring-box svg{ display:block; transform:rotate(-90deg); }
-      .ring-txt{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.05; }
-      .ring-txt b{ font-size:14px; color:#fff; }
-      .ring-txt span{ font-size:9.5px; color:var(--mut); }
-      .title-line{ display:flex; align-items:baseline; gap:8px; margin-top:7px; flex-wrap:wrap; }
-      .compact-title{
-        font-family:"Noto Serif TC", serif; font-weight:900; font-size:21px; letter-spacing:.05em;
-        color:var(--gold2); margin:0; text-shadow:0 0 12px rgba(201,162,77,.32);
-      }
-      .compact-sub{ color:var(--mut); font-size:12px; flex:1; min-width:140px; }
-      .target-toggle{ min-height:32px !important; padding:3px 10px; font-size:12.5px; }
-      .target-panel{
-        margin-top:8px; padding:10px 12px; border-radius:12px;
-        border:1px solid rgba(120,150,190,.25); background:rgba(255,255,255,.03);
+        background:linear-gradient(135deg, rgba(94,168,221,.32), rgba(201,162,77,.32));
+        border-color:rgba(201,162,77,.5);
+        text-shadow:0 0 8px rgba(201,162,77,.35);
       }
 
-      /* ---------- quota summary cards ---------- */
-      .qcard{ margin-bottom:10px; overflow:hidden; }
-      .qhead{
-        width:100%; display:flex; align-items:center; gap:10px; text-align:left;
-        background:transparent; border:0; color:var(--ink); padding:11px 14px 10px; min-height:54px;
-      }
-      .qleft{ flex:1; min-width:0; display:block; }
-      .qtitle{ display:block; font-size:17px; font-weight:900; color:#fff; line-height:1.25; }
-      .qsub{ display:block; color:var(--mut); font-size:12.5px; margin-top:2px; line-height:1.5; }
-      .qsub b{ color:var(--gold2); }
-      .qbig{ flex:0 0 auto; font-size:27px; font-weight:900; line-height:1; white-space:nowrap; }
-      .qbig .num{ color:var(--gold2); text-shadow:0 0 10px rgba(201,162,77,.30); }
-      .qbig .of{ color:#fff; font-size:16px; font-weight:700; }
-      .qbig.done .num{ color:var(--green); text-shadow:0 0 10px rgba(76,195,138,.30); }
-      .qbig-text{ font-size:19px; color:var(--mut); }
-      .qbig-text.on{ color:var(--green); }
-      .qchev{ flex:0 0 auto; color:var(--mut); transition:transform .2s; }
-      .qcard.open .qchev{ transform:rotate(180deg); }
-      .qbody{ display:none; padding:2px 12px 12px; }
-      .qcard.open .qbody{ display:block; }
-      .qcnt{ color:var(--mut); font-size:12.5px; margin:2px 2px 8px; }
-      .inner-form{ border-top:1px solid rgba(255,255,255,.08); margin-top:12px; padding-top:12px; }
-      .inner-form h4{ margin:0 0 9px; font-size:14.5px; font-weight:900; color:#fff; }
-      .inner-form label{ font-size:12.5px; color:var(--mut); display:block; margin-bottom:3px; }
-      .inner-form input{
-        background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35);
-        border-radius:10px; padding:8px 11px; color:var(--ink); width:100%;
-      }
-      .util-row{ display:flex; gap:9px; flex-wrap:wrap; margin:2px 0 4px; }
-
-      /* gradient-border card: colour lives on the rim only, centre stays hollow/dark */
+      /* gradient-border card */
       .gcard{
         border:1px solid transparent;
         border-radius:var(--radius);
@@ -136,98 +90,180 @@
         box-shadow: inset 0 0 22px rgba(94,168,221,.05), inset 0 0 30px rgba(201,162,77,.03);
       }
 
-      /* ---------- tabs ---------- */
-      .tabs{
-        position:sticky; top:6px; z-index:30;
-        display:flex; gap:6px; padding:4px;
-        border-radius:12px;
-        background:rgba(9,14,26,.88);
-        backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-        border:1px solid rgba(120,150,190,.22);
-        margin-bottom:10px;
+      /* ---------- daily header ---------- */
+      .date-row{ display:flex; align-items:flex-start; gap:10px; }
+      .date-pill{
+        border:1px solid rgba(201,162,77,.55); border-radius:999px; min-height:38px;
+        padding:7px 15px; font-weight:900; font-size:13.5px; color:#f5e7bd; white-space:nowrap;
+        background:linear-gradient(135deg, rgba(94,168,221,.30), rgba(201,162,77,.24));
       }
-      .tab-btn{
-        flex:1; border:1px solid transparent; border-radius:9px;
-        background:transparent; color:var(--mut);
-        font-weight:700; font-size:15px; padding:6px 4px; min-height:38px;
+      .ring-box{ margin-left:auto; flex:0 0 auto; width:66px; height:66px; position:relative; }
+      .ring-box svg{ display:block; transform:rotate(-90deg); }
+      .ring-txt{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.05; }
+      .ring-txt b{ font-size:16px; color:#fff; }
+      .ring-txt span{ font-size:10px; color:var(--mut); }
+      .big-title{
+        font-family:"Noto Serif TC", serif; font-weight:900;
+        font-size:clamp(34px, 9vw, 44px); letter-spacing:.04em;
+        color:var(--gold2); margin:0 0 2px;
+        text-shadow:0 0 18px rgba(236,205,111,.45), 0 0 42px rgba(94,168,221,.25);
       }
-      .tab-btn[aria-selected="true"]{
-        color:var(--gold2);
-        background:linear-gradient(135deg, rgba(94,168,221,.30), rgba(201,162,77,.30));
-        border-color:rgba(201,162,77,.45);
-        text-shadow:0 0 8px rgba(201,162,77,.35);
+      .mono-line{
+        display:flex; align-items:center; gap:9px;
+        font-family:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        letter-spacing:.3em; font-size:11.5px; color:var(--mut);
       }
+      .mono-line .cdot{ flex:0 0 auto; width:8px; height:8px; border-radius:50%; background:#35c4d8; box-shadow:0 0 8px rgba(53,196,216,.8); }
+      .page-desc{ color:var(--mut); font-size:14.5px; margin:9px 0 12px; }
+      .page-h1{ font-size:27px; font-weight:900; color:#fff; margin:4px 0 4px; }
+      .page-desc2{ color:var(--mut); font-size:14.5px; margin:0 0 14px; }
+      .day-nav{ display:flex; gap:8px; align-items:center; margin-bottom:14px; }
+      .sq-btn{
+        width:42px; height:42px; min-height:42px; border-radius:11px; padding:0;
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.35);
+        color:var(--ink); font-size:21px; font-weight:900; line-height:1;
+      }
+      .sq-btn:active{ background:rgba(255,255,255,.13); }
+      .today-mini{
+        min-height:38px; border-radius:10px; padding:5px 12px;
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.32);
+        color:var(--ink); font-weight:700; font-size:13px;
+      }
+      .target-toggle{ margin-left:auto; min-height:36px !important; padding:4px 12px; font-size:12.5px; }
+      .target-panel{
+        margin:-4px 0 12px; padding:10px 12px; border-radius:12px;
+        border:1px solid rgba(120,150,190,.25); background:rgba(255,255,255,.03);
+      }
+      .target-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; color:var(--mut); font-size:13px; }
+      .target-row input{ width:58px; background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:8px; padding:5px 8px; color:var(--ink); min-height:36px; }
 
-      /* ---------- progress ---------- */
-      .progress-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px; }
-      .stat{ padding:12px 10px 10px; text-align:center; }
-      .stat .big{ font-size:30px; font-weight:900; line-height:1.1; }
-      .stat .big .num{ color:var(--gold2); text-shadow:0 0 12px rgba(201,162,77,.30); }
-      .stat .big .of{ color:#fff; font-size:19px; font-weight:700; }
-      .stat .lbl{ color:var(--mut); font-size:13px; margin-top:2px; }
-      .stat .bar{ height:5px; border-radius:3px; background:rgba(255,255,255,.09); margin-top:8px; overflow:hidden; }
-      .stat .bar i{ display:block; height:100%; border-radius:3px; background:linear-gradient(90deg, var(--blue), var(--gold)); transition:width .35s ease; }
-      .stat.done .num{ color:var(--green); text-shadow:0 0 12px rgba(76,195,138,.30); }
-
-      /* ---------- date nav ---------- */
-      .datenav{ display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:12px; flex-wrap:wrap; }
-      .datenav .dlabel{ font-weight:900; font-size:17px; }
-      .datenav .dlabel .wk{ color:var(--mut); font-weight:500; font-size:13px; margin-left:6px; }
-      .datenav .sp{ flex:1; }
-      .ghost-btn{
-        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.30);
-        border-radius:10px; color:var(--ink); padding:6px 12px; font-weight:700; min-height:40px;
+      /* ---------- quota cards ---------- */
+      .qcard{ margin-bottom:12px; overflow:hidden; }
+      .qcard.zoom{ position:fixed; inset:8px; z-index:70; overflow-y:auto; background:linear-gradient(var(--panel), var(--panel)) padding-box, linear-gradient(135deg, rgba(94,168,221,.60), rgba(94,168,221,.10) 42%, rgba(201,162,77,.10) 58%, rgba(201,162,77,.60)) border-box; }
+      .qhead{
+        position:relative; width:100%; display:block; text-align:left;
+        background:transparent; border:0; color:var(--ink); padding:16px 16px 26px; min-height:64px;
       }
-      .ghost-btn:active{ background:rgba(255,255,255,.12); }
-      .datenav input[type="date"]{
-        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.30);
-        border-radius:10px; padding:4px 8px; color:var(--ink); min-height:40px; max-width:150px;
+      .qtitle{ display:block; font-size:19px; font-weight:900; color:#fff; line-height:1.3; padding-right:110px; }
+      .qtitle .vid-state{ color:var(--mut); font-size:15px; font-weight:700; margin-left:8px; }
+      .qtitle .vid-state.on{ color:var(--green); }
+      .qsub{ display:block; color:var(--mut); font-size:13.5px; margin-top:5px; line-height:1.65; padding-right:40px; }
+      .qsub b{ color:var(--gold2); }
+      .qbig{ position:absolute; top:14px; right:16px; font-size:30px; font-weight:900; line-height:1.1; white-space:nowrap; }
+      .qbig .num{ color:var(--gold2); text-shadow:0 0 10px rgba(236,205,111,.30); }
+      .qbig .of{ color:#fff; font-size:17px; font-weight:700; }
+      .qbig.done .num{ color:var(--green); text-shadow:0 0 10px rgba(76,195,138,.30); }
+      .qchev{ position:absolute; right:18px; bottom:9px; color:var(--mut); font-size:14px; transition:transform .2s; }
+      .qcard.open .qchev{ transform:rotate(180deg); }
+      .qbody{ display:none; padding:2px 14px 16px; }
+      .qcard.open .qbody{ display:block; }
+      .qbody-head{ display:flex; justify-content:flex-end; margin-bottom:8px; }
+      .zoom-btn{
+        border:1px solid rgba(120,150,190,.35); background:rgba(255,255,255,.04);
+        border-radius:999px; color:#dbe6f2; padding:5px 14px; font-size:13.5px; font-weight:700; min-height:36px;
       }
-
-      /* ---------- sections ---------- */
-      .sec-head{ display:flex; align-items:center; gap:8px; margin:20px 2px 10px; }
-      .sec-head h2{ font-size:19px; font-weight:900; margin:0; color:#fff; }
-      .sec-head .cnt{ color:var(--mut); font-size:13px; }
-      .sec-head .sp{ flex:1; }
 
       .gold-btn{
-        border:1px solid rgba(201,162,77,.55); border-radius:11px; min-height:42px;
-        padding:8px 16px; font-weight:900; color:#14100a;
+        border:1px solid rgba(201,162,77,.55); border-radius:12px; min-height:44px;
+        padding:9px 18px; font-weight:900; color:#171106; font-size:15.5px;
         background:linear-gradient(135deg, var(--gold2), var(--gold));
         box-shadow:0 0 14px rgba(201,162,77,.22);
       }
       .gold-btn:active{ filter:brightness(1.08); }
-      .blue-btn{
-        border:1px solid rgba(94,168,221,.5); border-radius:11px; min-height:42px;
-        padding:8px 16px; font-weight:700; color:#dceeff;
-        background:linear-gradient(135deg, rgba(94,168,221,.28), rgba(94,168,221,.12));
+      .teal-btn{
+        border:0; border-radius:12px; min-height:48px;
+        padding:10px 22px; font-weight:900; color:#052530; font-size:16.5px;
+        background:linear-gradient(135deg, #4fd6ea, #23b1d4);
+        box-shadow:0 0 16px rgba(62,198,221,.35);
+      }
+      .teal-btn:active{ filter:brightness(1.07); }
+      .ghost-btn{
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.32);
+        border-radius:11px; color:var(--ink); padding:7px 14px; font-weight:700; min-height:42px; font-size:14.5px;
+      }
+      .ghost-btn:active{ background:rgba(255,255,255,.12); }
+      .mini-btn{
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.28);
+        border-radius:9px; color:#dbe6f2; padding:5px 11px; font-size:13.5px; font-weight:700; min-height:38px;
+      }
+      .mini-btn.danger{ color:#f0b7c8; border-color:rgba(229,138,165,.35); }
+      .mini-btn:active{ background:rgba(255,255,255,.12); }
+
+      /* ---------- inline forms (screenshot style: underline fields) ---------- */
+      .inline-form{
+        border:1px solid rgba(120,150,190,.28); border-radius:14px;
+        padding:14px 14px 16px; margin-top:12px; background:rgba(255,255,255,.02);
+      }
+      .fld{ margin-bottom:13px; }
+      .fld label, .fld-label{ font-size:13.5px; font-weight:700; color:var(--mut); display:block; margin-bottom:2px; }
+      .fld input, .fld select, .fld textarea,
+      .inline-form > input, .picker input[type="text"]{
+        width:100%; background:transparent; border:0; border-radius:0;
+        border-bottom:1px solid rgba(120,150,190,.45);
+        padding:8px 2px; color:var(--ink); min-height:42px;
+      }
+      .fld textarea{ resize:vertical; }
+      .fld input::placeholder, .fld textarea::placeholder, .picker input::placeholder{ color:var(--mut2); }
+      .form-btns{ display:flex; gap:10px; margin-top:6px; }
+      .form-btns .teal-btn{ flex:1; }
+      .warn-box{
+        border:1px solid rgba(217,154,61,.55); background:rgba(217,154,61,.10);
+        border-radius:11px; padding:10px 12px; font-size:14px; color:#f6ddae; margin:10px 0;
+      }
+      .warn-box .row{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+      .warn-banner{
+        border:1px solid rgba(242,201,60,.55); background:rgba(62,46,8,.35);
+        border-radius:12px; padding:11px 13px; font-weight:700; font-size:14px; color:#f5cf5a; margin:14px 0 2px;
       }
 
-      /* ---------- person rows ---------- */
+      /* ---------- group heads ---------- */
+      .group-head{
+        width:100%; display:flex; align-items:center; gap:10px; text-align:left;
+        background:transparent; border:0; color:#fff; padding:14px 2px 10px; min-height:48px;
+      }
+      .group-head h3{ font-size:17.5px; font-weight:900; margin:0; }
+      .group-head .gsub{ color:var(--mut); font-size:13px; }
+      .group-head .gchev{ margin-left:auto; color:var(--mut); transition:transform .2s; }
+      .group-head.closed .gchev{ transform:rotate(180deg); }
+
+      /* ---------- person cards ---------- */
       .plist{ display:flex; flex-direction:column; gap:10px; }
-      .prow{ padding:12px 12px 10px; transition:box-shadow .3s ease, border-color .3s ease; }
-      .prow.drawn{
-        box-shadow:0 0 0 2px rgba(201,162,77,.75), 0 0 26px rgba(201,162,77,.35);
+      .pcard{
+        border:1px solid rgba(120,150,190,.20); border-radius:14px;
+        padding:12px 12px 11px; background:rgba(255,255,255,.02);
       }
-      .prow .line1{ display:flex; align-items:flex-start; gap:8px; }
-      .star-btn{
-        flex:0 0 auto; width:44px; height:44px; border-radius:12px;
-        background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);
-        font-size:24px; line-height:1; display:flex; align-items:center; justify-content:center;
-        color:#54657c;
+      .pcard.editing{
+        background:linear-gradient(160deg, rgba(35,105,138,.48), rgba(13,38,62,.60));
+        border-color:rgba(62,198,221,.55);
+        box-shadow:0 0 18px rgba(62,198,221,.18);
       }
-      .star-btn.s-vip{ color:var(--teal); border-color:rgba(109,171,185,.5); text-shadow:0 0 10px rgba(109,171,185,.45); }
-      .star-btn.s-abo{ color:var(--gold); border-color:rgba(201,162,77,.55); text-shadow:0 0 10px rgba(201,162,77,.45); }
-      .pname{ flex:1; min-width:0; padding-top:2px; }
-      .pname .nm{ font-size:18px; font-weight:900; color:#fff; word-break:break-all; }
-      .pname .meta{ color:var(--mut); font-size:12.5px; margin-top:1px; word-break:break-all; }
-      .pname .meta .tagchip{
-        display:inline-block; border:1px solid rgba(120,150,190,.35); border-radius:20px;
-        padding:0 8px; margin-right:5px; color:#c6d6ea; font-size:11.5px; line-height:1.7;
+      .p-row1{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+      .p-name{ font-size:18px; font-weight:900; color:#fff; word-break:break-all; }
+      .p-star{ font-size:17px; line-height:1; }
+      .p-star.vip{ color:var(--teal); text-shadow:0 0 9px rgba(109,171,185,.5); }
+      .p-star.abo{ color:var(--gold); text-shadow:0 0 9px rgba(201,162,77,.5); }
+      .src-chip{
+        border:1px solid rgba(120,150,190,.4); border-radius:999px;
+        padding:1px 10px; font-size:12px; color:#c6d6ea; line-height:1.8; white-space:nowrap;
+      }
+      .follow-chip{
+        border:1px solid rgba(201,162,77,.6); border-radius:999px;
+        padding:1px 9px; font-size:11.5px; font-weight:900; color:var(--gold2); line-height:1.8; white-space:nowrap;
+      }
+      .p-row2{ margin-top:8px; }
+      .rename-chip{
+        border:1px solid rgba(120,150,190,.35); background:rgba(255,255,255,.04);
+        border-radius:999px; color:#dbe6f2; padding:4px 14px; font-size:13.5px; font-weight:700; min-height:36px;
+      }
+      .p-row3{ display:flex; align-items:center; gap:9px; margin-top:11px; }
+      .swap-sq{
+        flex:0 0 auto; width:44px; height:44px; min-height:44px; border-radius:11px; padding:0;
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.32);
+        color:#dbe6f2; font-size:18px; line-height:1;
       }
       .status-pill{
-        flex:0 0 auto; border-radius:20px; padding:7px 13px; font-weight:900; font-size:14px;
-        border:1px solid; min-height:40px;
+        flex:0 0 auto; border-radius:999px; padding:7px 16px; font-weight:900; font-size:14.5px;
+        border:1px solid; min-height:44px; min-width:92px;
       }
       .st-0{ color:#c3cfdf; background:rgba(148,170,200,.12); border-color:rgba(148,170,200,.35); }
       .st-1{ color:#f2c184; background:rgba(217,154,61,.13); border-color:rgba(217,154,61,.45); }
@@ -240,175 +276,206 @@
       .o-1{ color:#a9d4f5; background:rgba(94,168,221,.14); border-color:rgba(94,168,221,.45); }
       .o-2{ color:#8fe3b6; background:rgba(76,195,138,.13); border-color:rgba(76,195,138,.45); }
       .o-3{ color:#cbb8d9; background:rgba(160,139,181,.13); border-color:rgba(160,139,181,.45); }
+      .p-row4{ margin-top:10px; color:var(--mut); font-size:14px; }
+      .p-row4 .edit-link{
+        background:none; border:0; color:var(--cyan); font-weight:900; font-size:14px;
+        padding:2px 4px; min-height:32px;
+      }
+      .edit-top{ display:flex; gap:9px; margin-bottom:12px; }
+      .edit-top .teal-btn{ flex:1; font-size:15.5px; padding:10px 8px; }
+      .edit-fields .fld{ margin-bottom:9px; }
+      .edit-fields input{
+        width:100%; background:rgba(6,14,24,.45); border:1px solid rgba(62,198,221,.35);
+        border-radius:10px; padding:8px 11px; color:var(--ink); min-height:42px;
+      }
+      .edit-fields label{ font-size:12.5px; color:#a9c8d8; display:block; margin-bottom:3px; }
+      .star-cycle{
+        border:1px solid rgba(120,150,190,.35); background:rgba(6,14,24,.45);
+        border-radius:10px; min-width:52px; min-height:42px; font-size:21px; color:#54657c;
+      }
+      .star-cycle.vip{ color:var(--teal); } .star-cycle.abo{ color:var(--gold); }
+      .arch-tag{ color:#f0b7c8; font-size:12.5px; font-weight:700; }
+      .pcard.archived{ opacity:.6; }
 
-      .line2{ display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap; }
-      .rel-wrap{ display:flex; align-items:center; gap:8px; flex:1; min-width:170px; }
-      .rel-wrap .rl{ color:var(--mut); font-size:12.5px; white-space:nowrap; }
-      .rel-wrap .rv{ color:var(--gold2); font-weight:900; font-size:15px; min-width:14px; text-align:center; }
-      input[type="range"]{
-        -webkit-appearance:none; appearance:none; flex:1; height:36px; background:transparent; min-width:90px;
+      /* ---------- relationship slider ---------- */
+      .rel{ display:flex; align-items:center; gap:10px; flex:1; min-width:150px; }
+      .rel-track{
+        position:relative; flex:1; height:10px; border-radius:6px;
+        background:#1d2739; cursor:pointer; touch-action:none; outline:none;
       }
-      input[type="range"]::-webkit-slider-runnable-track{ height:6px; border-radius:3px; background:linear-gradient(90deg, rgba(94,168,221,.55), rgba(201,162,77,.65)); }
-      input[type="range"]::-webkit-slider-thumb{
-        -webkit-appearance:none; width:26px; height:26px; border-radius:50%; margin-top:-10px;
-        background:radial-gradient(circle at 35% 35%, #f4e2ac, var(--gold));
-        border:1px solid rgba(0,0,0,.35); box-shadow:0 0 10px rgba(201,162,77,.4);
+      .rel-track:focus-visible{ box-shadow:0 0 0 2px rgba(62,198,221,.6); }
+      .rel-grad{
+        position:absolute; inset:0; border-radius:6px;
+        background:linear-gradient(90deg, #2e9be6 0%, #43bcc4 30%, #a9be57 68%, #e9c44e 100%);
       }
-      input[type="range"]::-moz-range-track{ height:6px; border-radius:3px; background:linear-gradient(90deg, rgba(94,168,221,.55), rgba(201,162,77,.65)); }
-      input[type="range"]::-moz-range-thumb{ width:24px; height:24px; border-radius:50%; background:var(--gold); border:1px solid rgba(0,0,0,.35); }
-      .mini-btn{
-        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.28);
-        border-radius:9px; color:#dbe6f2; padding:5px 11px; font-size:13.5px; font-weight:700; min-height:38px;
+      .rel-dot{
+        position:absolute; top:50%; width:5px; height:5px; border-radius:50%;
+        background:rgba(6,10,19,.55); transform:translate(-50%,-50%); z-index:2;
       }
-      .mini-btn.danger{ color:#f0b7c8; border-color:rgba(229,138,165,.35); }
-      .mini-btn:active{ background:rgba(255,255,255,.12); }
+      .rel-orb{
+        position:absolute; top:50%; width:21px; height:21px; border-radius:50%;
+        transform:translate(-50%,-50%); z-index:3;
+        border:2px solid rgba(255,255,255,.22);
+      }
+      .rel-lvl{ color:#dbe6f2; font-size:13.5px; font-weight:700; white-space:nowrap; min-width:42px; }
+      .rel.mini .rel-track{ height:8px; }
+      .rel.mini .rel-orb{ width:16px; height:16px; }
+      .rel.mini .rel-lvl{ font-size:12.5px; min-width:38px; }
 
-      .edit-box{ display:flex; flex-direction:column; gap:8px; width:100%; }
-      .edit-box input, .form-grid input, .form-grid select{
-        background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35);
-        border-radius:10px; padding:8px 11px; color:var(--ink); width:100%;
+      /* ---------- modal (swap / poster) ---------- */
+      .modal-wrap{
+        position:fixed; inset:0; z-index:80; display:none; overflow-y:auto;
+        padding:14px 12px 30px;
+        background:rgba(4,7,13,.62);
+        backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
       }
-      .edit-box label, .form-grid label{ font-size:12.5px; color:var(--mut); display:block; margin-bottom:3px; }
-      .edit-row{ display:flex; gap:8px; }
-      .edit-row > div{ flex:1; }
-
-      /* ---------- forms ---------- */
-      .form-card{ padding:14px; margin-bottom:12px; }
-      .form-card h3{ margin:0 0 10px; font-size:16px; font-weight:900; color:#fff; }
-      .form-grid{ display:grid; grid-template-columns:1fr; gap:10px; }
-      @media (min-width:560px){ .form-grid.two{ grid-template-columns:1fr 1fr; } .form-grid .wide{ grid-column:1 / -1; } }
-      .warn-box{
-        border:1px solid rgba(217,154,61,.55); background:rgba(217,154,61,.10);
-        border-radius:11px; padding:10px 12px; font-size:14px; color:#f6ddae; margin-top:10px;
+      .modal-wrap.show{ display:block; }
+      .modal-card{ width:100%; max-width:560px; margin:3vh auto; padding:18px 16px 16px; }
+      .modal-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+      .modal-head h3{ margin:0; font-size:20px; font-weight:900; color:#fff; flex:1; }
+      .x-btn{
+        flex:0 0 auto; width:42px; height:42px; min-height:42px; border-radius:50%; padding:0;
+        background:rgba(255,255,255,.05); border:1px solid rgba(120,150,190,.35); color:#fff; font-size:16px;
       }
-      .warn-box .row{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
-
-      /* ---------- collapsible ---------- */
-      .collapse{ margin-top:10px; }
-      .collapse > button.chead{
-        width:100%; display:flex; align-items:center; gap:8px; text-align:left;
-        background:transparent; border:0; color:#fff; font-weight:900; font-size:16px; padding:12px 14px; min-height:48px;
+      .confirm-box{
+        border:1px solid rgba(120,150,190,.28); border-radius:14px;
+        padding:13px 14px; background:rgba(255,255,255,.02); margin-bottom:14px;
       }
-      .collapse .chev{ margin-left:auto; color:var(--mut); transition:transform .2s; }
-      .collapse.open .chev{ transform:rotate(180deg); }
-      .collapse .cbody{ display:none; padding:2px 14px 14px; }
-      .collapse.open .cbody{ display:block; }
+      .confirm-box p{ margin:0 0 10px; color:var(--mut); font-size:14.5px; }
+      .confirm-box p b{ color:#fff; }
+      .confirm-row{ display:flex; gap:7px; flex-wrap:wrap; align-items:center; }
+      .confirm-chip{
+        border-radius:999px; padding:6px 15px; font-size:14px; min-height:40px; font-weight:700;
+        border:1px solid rgba(120,150,190,.32); background:rgba(255,255,255,.04); color:#c6d6ea;
+      }
+      .confirm-chip.on{ color:#171106; font-weight:900; background:linear-gradient(135deg, var(--gold2), var(--gold)); border-color:rgba(201,162,77,.65); }
+      .confirm-chip.on-old{ color:#f6d9e2; font-weight:900; background:rgba(229,138,165,.20); border-color:rgba(229,138,165,.6); }
+      .record-line{ margin:10px 0 0 !important; color:#d8e4f2 !important; font-size:14px; }
+      .random-box{
+        border:1px solid rgba(242,201,60,.55); border-radius:14px;
+        background:rgba(62,46,8,.28); padding:14px; margin-bottom:16px;
+      }
+      .random-box .rb-head{ display:flex; align-items:center; gap:10px; }
+      .random-box .rb-head span{ flex:1; font-size:17px; font-weight:900; color:#f5cf5a; }
+      .random-box p{ margin:9px 0 0; color:var(--mut); font-size:13.5px; }
+      .newname-row{ display:flex; gap:9px; align-items:flex-end; margin-top:6px; }
+      .newname-row input{
+        flex:1; background:transparent; border:0; border-radius:0;
+        border-bottom:1px solid rgba(120,150,190,.45); padding:8px 2px; color:var(--ink); min-height:42px;
+      }
+      .newname-row input::placeholder{ color:var(--mut2); }
+      .use-name-btn{
+        flex:0 0 auto; border:1px solid rgba(62,198,221,.45); background:rgba(62,198,221,.10);
+        color:#a9e6f2; border-radius:11px; padding:7px 14px; font-weight:900; min-height:42px;
+      }
+      .common-title{ color:var(--gold2); font-size:16.5px; font-weight:900; margin:18px 0 2px; }
 
-      /* ---------- meetings / offers ---------- */
-      .meet-chips{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:12px; }
+      /* ---------- people picker ---------- */
+      .pick-list{ max-height:340px; overflow-y:auto; }
+      .pick-row{ border-bottom:1px solid rgba(255,255,255,.07); padding:10px 0; }
+      .pick-line1{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+      .pick-name{ font-size:16.5px; font-weight:900; color:#fff; }
+      .add-btn{
+        margin-left:auto; flex:0 0 auto; border:0; border-radius:999px;
+        padding:9px 19px; font-weight:900; font-size:15px; min-height:42px;
+        background:linear-gradient(135deg, #4fd6ea, #23b1d4); color:#052530;
+        box-shadow:0 0 12px rgba(62,198,221,.30);
+      }
+      .add-btn[disabled]{ background:rgba(255,255,255,.08); color:var(--mut); box-shadow:none; cursor:default; }
+      .pick-line2{ display:flex; align-items:center; gap:9px; margin-top:9px; }
+      .flag-chip{
+        border-radius:999px; padding:4px 13px; font-size:12.5px; min-height:36px;
+        border:1px solid rgba(120,150,190,.32); background:rgba(255,255,255,.04); color:var(--mut);
+      }
+      .flag-chip.on{ color:#171106; font-weight:900; background:linear-gradient(135deg, var(--gold2), var(--gold)); border-color:rgba(201,162,77,.6); }
+      .star-mini{
+        background:none; border:0; font-size:22px; min-height:38px; min-width:38px; color:#54657c; padding:0;
+      }
+      .star-mini.vip{ color:var(--teal); } .star-mini.abo{ color:var(--gold); }
+
+      /* ---------- meetings ---------- */
+      .week-count{ position:absolute; top:20px; right:44px; color:var(--mut); font-size:14.5px; font-weight:700; }
+      .meet-chips{ display:flex; gap:9px; overflow-x:auto; padding-bottom:8px; margin-bottom:6px; -webkit-overflow-scrolling:touch; }
       .meet-chip{
-        border-radius:12px; padding:10px 14px; text-align:left; min-height:52px;
+        flex:0 0 auto; min-width:210px; max-width:78vw; border-radius:14px; padding:11px 15px; text-align:left; min-height:56px;
         border:1px solid rgba(120,150,190,.30); background:rgba(255,255,255,.04); color:var(--ink);
       }
-      .meet-chip .mn{ font-weight:900; font-size:16px; display:block; }
-      .meet-chip .mc{ color:var(--mut); font-size:12px; display:block; }
+      .meet-chip .mn{ font-weight:900; font-size:16.5px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .meet-chip .mc{ color:var(--mut); font-size:12.5px; display:block; margin-top:2px; white-space:nowrap; }
       .meet-chip.sel{
-        color:var(--gold2);
         background:linear-gradient(135deg, rgba(94,168,221,.30), rgba(201,162,77,.30));
-        border-color:rgba(201,162,77,.5);
+        border-color:rgba(201,162,77,.55);
       }
+      .meet-chip.sel .mn{ color:var(--gold2); }
       .meet-chip.sel .mc{ color:#d8e4f2; }
-      .count-row{ display:flex; flex-wrap:wrap; gap:7px; margin:10px 0 4px; }
-      .count-chip{ border-radius:18px; padding:4px 11px; font-size:13px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.04); color:var(--mut); }
-      .count-chip b{ color:#fff; font-size:14px; }
-      .count-chip.pos b{ color:var(--green); }
-      .meet-detail{ padding:14px; }
-      .meet-detail h3{ margin:0; font-size:18px; font-weight:900; }
-      .meet-detail .when{ color:var(--mut); font-size:13px; }
-      .offer-card{ padding:14px; margin-bottom:12px; }
-      .offer-card h3{ margin:0; font-size:18px; font-weight:900; color:#fff; }
-      .offer-card .desc{ color:var(--mut); font-size:13.5px; margin-top:2px; }
-      .add-inline{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-      .add-inline input{ flex:1; min-width:150px; background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:10px; padding:8px 11px; color:var(--ink); }
+      .meet-detail{ padding:16px 14px; margin-bottom:12px; }
+      .md-head{ display:flex; align-items:flex-start; gap:10px; }
+      .md-head h3{ margin:0; font-size:20px; font-weight:900; color:#fff; flex:1; line-height:1.35; }
+      .md-count{ flex:0 0 auto; text-align:center; }
+      .md-count .big{ font-size:34px; font-weight:900; color:var(--gold2); line-height:1; text-shadow:0 0 12px rgba(236,205,111,.3); }
+      .md-count .lbl{ color:#fff; font-size:13px; font-weight:700; margin-top:3px; }
+      .md-meta{ color:var(--mut); font-size:13.5px; margin-top:8px; line-height:1.7; }
+      .member-row{
+        display:flex; align-items:center; gap:9px;
+        border:1px solid rgba(120,150,190,.18); border-radius:12px;
+        padding:9px 11px; background:rgba(255,255,255,.02);
+      }
+      .member-row .mn2{ flex:1; font-weight:900; color:#fff; font-size:16px; min-width:0; word-break:break-all; }
+      .member-row .status-pill{ min-width:84px; min-height:40px; font-size:14px; padding:6px 12px; }
+      .picker-zone{ border-top:1px solid rgba(255,255,255,.08); margin-top:14px; padding-top:12px; }
 
-      .appt-row{ display:flex; align-items:center; gap:10px; padding:9px 2px; border-bottom:1px solid rgba(255,255,255,.06); }
+      /* ---------- poster ---------- */
+      .poster{
+        position:relative; border-radius:12px; min-height:170px; margin:12px 0;
+        background:linear-gradient(150deg, #12203a, #0a1220);
+        border:1px solid rgba(120,150,190,.28);
+        display:flex; align-items:center; justify-content:center;
+        color:var(--mut2); font-size:16px; letter-spacing:.5em; font-weight:700;
+      }
+      .poster .zoom-chip{
+        position:absolute; right:10px; bottom:10px; letter-spacing:0;
+        background:rgba(0,0,0,.68); color:#fff; border:1px solid rgba(255,255,255,.22);
+        border-radius:999px; padding:5px 13px; font-size:12.5px; font-weight:700; min-height:34px;
+      }
+      .poster.big{ min-height:52vh; font-size:20px; }
+
+      /* ---------- offers ---------- */
+      .offer-card{ padding:16px 14px; margin-bottom:12px; }
+      .offer-head{ display:flex; align-items:flex-start; gap:9px; }
+      .offer-head h3{ margin:0; font-size:19px; font-weight:900; color:#fff; flex:1; line-height:1.4; }
+      .offer-badge{
+        display:inline-block; margin-top:11px;
+        border:1px solid rgba(242,201,60,.6); color:#f5cf5a;
+        border-radius:999px; padding:6px 14px; font-weight:700; font-size:13px;
+        background:rgba(62,46,8,.30); line-height:1.5;
+      }
+      .offer-stats{ color:var(--mut); font-size:13.5px; margin-top:10px; }
+      .offer-content{ color:#e6edf6; font-size:15px; margin-top:9px; line-height:1.75; }
+      .share-btn{
+        width:100%; display:flex; align-items:center; justify-content:center; gap:9px;
+        border:1px solid rgba(201,162,77,.55); border-radius:13px; min-height:52px;
+        font-weight:900; font-size:17px; color:#171106;
+        background:linear-gradient(135deg, var(--gold2), var(--gold));
+        box-shadow:0 0 16px rgba(201,162,77,.25); margin:4px 0 6px;
+      }
+      .share-btn svg{ flex:0 0 auto; }
+
+      /* ---------- appointments / misc ---------- */
+      .appt-row{ display:flex; align-items:center; gap:10px; padding:10px 2px; border-bottom:1px solid rgba(255,255,255,.06); flex-wrap:wrap; }
       .appt-row:last-child{ border-bottom:0; }
       .appt-row .tm{ color:var(--gold2); font-weight:900; min-width:52px; }
-      .log-row{ font-size:13.5px; color:var(--mut); padding:6px 0; border-bottom:1px solid rgba(255,255,255,.05); }
-      .log-row:last-child{ border-bottom:0; }
-      .log-row .who{ color:#fff; font-weight:700; }
+      .appt-row .who{ font-weight:900; color:#fff; }
+      .appt-row .pp{ color:var(--mut); font-size:13.5px; }
+      .seg{ display:flex; border:1px solid rgba(120,150,190,.35); border-radius:12px; overflow:hidden; }
+      .seg button{ flex:1; background:rgba(255,255,255,.04); border:0; color:var(--mut); font-weight:900; min-height:48px; font-size:16px; }
+      .seg button.on{ background:linear-gradient(135deg, var(--gold2), var(--gold)); color:#171106; }
       .pool-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.06); flex-wrap:wrap; }
       .pool-row:last-child{ border-bottom:0; }
       .pool-row .pn{ font-weight:700; color:#fff; }
       .pool-row .pm{ color:var(--mut2); font-size:12px; }
-      .flag-chip{
-        border-radius:16px; padding:4px 11px; font-size:12.5px; min-height:34px;
-        border:1px solid rgba(120,150,190,.30); background:rgba(255,255,255,.04); color:var(--mut);
-      }
-      .flag-chip.on{ color:#14100a; font-weight:900; background:linear-gradient(135deg, var(--gold2), var(--gold)); border-color:rgba(201,162,77,.6); }
-
-      .empty-card{ padding:26px 18px; text-align:center; }
-      .empty-card p{ color:var(--mut); margin:0 0 14px; }
-
-      .draw-banner{
-        display:none; padding:12px 14px; margin-bottom:12px; align-items:center; gap:10px;
-      }
-      .draw-banner.show{ display:flex; }
-      .draw-banner .dn{ font-size:19px; font-weight:900; color:var(--gold2); text-shadow:0 0 10px rgba(201,162,77,.35); }
-      .draw-banner .dl{ color:var(--mut); font-size:13px; }
-
-      /* ---------- focus overlay ---------- */
-      .focus-wrap{
-        position:fixed; inset:0; z-index:80; display:none;
-        align-items:center; justify-content:center; padding:18px;
-        background:rgba(4,7,13,.55);
-        backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-      }
-      .focus-wrap.show{ display:flex; }
-      .focus-card{ width:100%; max-width:430px; padding:24px 20px 20px; text-align:center; }
-      .focus-card .fname{ font-family:"Noto Serif TC", serif; font-size:34px; font-weight:900; color:#fff; margin:6px 0 2px; }
-      .focus-card .fmeta{ color:var(--mut); font-size:14px; }
-      .focus-card .frow{ display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
-      .focus-card .rel-wrap{ margin-top:18px; }
-      .focus-star{ font-size:44px; background:none; border:0; min-height:56px; }
-      .focus-star.s-vip{ color:var(--teal); text-shadow:0 0 16px rgba(109,171,185,.55); }
-      .focus-star.s-abo{ color:var(--gold); text-shadow:0 0 16px rgba(201,162,77,.55); }
-      .focus-star.s-none{ color:#54657c; }
-
-      /* ---------- toast ---------- */
-      .toast{
-        position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px);
-        z-index:90; max-width:min(92vw, 520px); text-align:center;
-        background:rgba(13,21,38,.96); color:#fff; font-size:14.5px; font-weight:700;
-        border:1px solid rgba(201,162,77,.5); border-radius:13px; padding:11px 18px;
-        opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
-        box-shadow:0 8px 30px rgba(0,0,0,.5);
-      }
-      .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-
-      .foot-note{ color:var(--mut2); font-size:12px; text-align:center; margin-top:26px; }
-      .hidden{ display:none !important; }
-
-      /* ---------- purpose / confirm / archived ---------- */
-      .purpose{
-        margin-top:9px; padding:8px 11px; border-radius:10px; cursor:pointer;
-        background:rgba(94,168,221,.08); border:1px dashed rgba(94,168,221,.35);
-        color:#cfe2f5; font-size:14px;
-      }
-      .purpose .pl{ color:var(--mut); font-size:12px; margin-right:6px; }
-      .purpose.empty{ color:var(--mut2); }
-      .purpose:active{ background:rgba(94,168,221,.16); }
-      .note-edit{ display:flex; gap:8px; margin-top:9px; flex-wrap:wrap; }
-      .note-edit input{ flex:1; min-width:150px; background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:10px; padding:8px 11px; color:var(--ink); }
-      .confirm-row{ display:flex; gap:7px; margin-top:9px; flex-wrap:wrap; align-items:center; }
-      .confirm-chip{
-        border-radius:18px; padding:5px 12px; font-size:13px; min-height:36px;
-        border:1px solid rgba(120,150,190,.30); background:rgba(255,255,255,.04); color:var(--mut);
-      }
-      .confirm-chip.on{ color:#14100a; font-weight:900; background:linear-gradient(135deg, var(--gold2), var(--gold)); border-color:rgba(201,162,77,.6); }
-      .confirm-chip.on-old{ color:#f6d9e2; font-weight:900; background:rgba(229,138,165,.20); border-color:rgba(229,138,165,.6); }
-      .prow.archived{ opacity:.6; }
-      .arch-tag{ color:#f0b7c8; font-size:12.5px; font-weight:700; }
-
-      /* ---------- closing / week / targets / poster ---------- */
-      .close-card{ padding:14px; margin-top:16px; }
-      .close-card h3{ margin:0 0 10px; font-size:16px; font-weight:900; color:#fff; }
-      .close-card label{ font-size:12.5px; color:var(--mut); display:block; margin:10px 0 3px; }
-      .close-card input[type="text"]{ background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:10px; padding:8px 11px; color:var(--ink); width:100%; }
-      .toggle-chip{ border-radius:11px; padding:8px 14px; font-weight:700; min-height:42px; border:1px solid rgba(120,150,190,.35); background:rgba(255,255,255,.04); color:var(--mut); }
-      .toggle-chip.on{ color:#14100a; font-weight:900; background:linear-gradient(135deg, var(--gold2), var(--gold)); border-color:rgba(201,162,77,.6); }
-      .target-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:-2px 2px 12px; color:var(--mut); font-size:13px; }
-      .target-row input{ width:58px; background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:8px; padding:5px 8px; color:var(--ink); min-height:36px; }
+      .log-row{ font-size:13.5px; color:var(--mut); padding:6px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+      .log-row:last-child{ border-bottom:0; }
+      .log-row .who{ color:#fff; font-weight:700; }
       .week-row{ display:flex; align-items:center; gap:7px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06); font-size:14px; flex-wrap:wrap; }
       .week-row:last-child{ border-bottom:0; }
       .week-row .wd{ font-weight:900; color:#fff; min-width:92px; }
@@ -416,151 +483,265 @@
       .week-chip b{ color:#fff; }
       .week-chip.hit{ border-color:rgba(76,195,138,.5); color:#8fe3b6; }
       .week-chip.hit b{ color:#8fe3b6; }
-      .poster-slot{
-        border:1px dashed rgba(120,150,190,.4); border-radius:12px; min-height:70px;
-        display:flex; align-items:center; justify-content:center; color:var(--mut2);
-        font-size:13px; margin:10px 0; background:rgba(255,255,255,.02);
+      .close-fields label{ font-size:12.5px; color:var(--mut); display:block; margin:10px 0 3px; }
+      .close-fields input[type="text"]{ background:rgba(255,255,255,.06); border:1px solid rgba(120,150,190,.35); border-radius:10px; padding:8px 11px; color:var(--ink); width:100%; }
+      .form-card{ padding:14px; margin-bottom:12px; }
+      .empty-note{ color:var(--mut); margin:6px 0; font-size:14px; }
+      .toast{
+        position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px);
+        z-index:95; max-width:min(92vw, 520px); text-align:center;
+        background:rgba(13,21,38,.96); color:#fff; font-size:14.5px; font-weight:700;
+        border:1px solid rgba(201,162,77,.5); border-radius:13px; padding:11px 18px;
+        opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
+        box-shadow:0 8px 30px rgba(0,0,0,.5);
       }
-      @media (prefers-reduced-motion: reduce){
-        *{ transition:none !important; }
-      }
+      .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+      .foot-note{ color:var(--mut2); font-size:12px; text-align:center; margin-top:26px; }
+      .hidden{ display:none !important; }
+      @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
     </style>
   </head>
   <body>
     <div class="wrap">
+      <div class="site-name">十三一清單</div>
+
       <nav class="tabs" role="tablist" aria-label="分頁">
         <button class="tab-btn" role="tab" id="tabbtn-daily" aria-selected="true" data-tab="daily">每日清單</button>
         <button class="tab-btn" role="tab" id="tabbtn-meet" aria-selected="false" data-tab="meet">推會議</button>
         <button class="tab-btn" role="tab" id="tabbtn-offer" aria-selected="false" data-tab="offer">推優惠</button>
       </nav>
 
-      <header class="compact-head">
-        <div class="head-row">
-          <div class="date-cluster">
-            <button class="date-pill" id="datePillBtn" aria-label="揀日期"><span id="datePillText"></span></button>
-            <button class="arrow-btn" id="datePrev" aria-label="上一日">‹</button>
-            <button class="arrow-btn" id="dateNext" aria-label="下一日">›</button>
-            <button class="today-mini hidden" id="dateToday">今日</button>
-          </div>
-          <div class="ring-box" id="ringBox" aria-label="今日完成度"></div>
-        </div>
-        <div class="title-line">
-          <h1 class="compact-title">十三一清單</h1>
-          <span class="compact-sub">每日人名跟進 — 名單自動排好，㩒住更新就得</span>
-          <button class="mini-btn target-toggle" id="btnTargetToggle" aria-expanded="false">改目標</button>
-        </div>
-        <div class="target-panel hidden" id="targetPanel"><div class="target-row" id="targetRow" style="margin:0"></div></div>
-      </header>
-
       <!-- ============ 每日清單 ============ -->
       <section id="tab-daily">
-        <div class="gcard draw-banner" id="drawBanner">
-          <div>
-            <div class="dl">隨機抽中 — 由呢位開始</div>
-            <div class="dn" id="drawName"></div>
-          </div>
-          <div class="sp" style="flex:1"></div>
-          <button class="mini-btn" id="drawFocus">焦點睇</button>
-          <button class="mini-btn" id="drawClose">收起</button>
+        <div class="date-row">
+          <button class="date-pill" id="datePillBtn" aria-label="揀日期"><span id="datePillText"></span></button>
+          <div class="ring-box" id="ringBox" aria-label="今日完成度"></div>
         </div>
+        <h1 class="big-title">每日清單</h1>
+        <div class="mono-line"><span class="cdot"></span><span>DAILY OPS // 10-3-1 SYSTEM</span></div>
+        <p class="page-desc">聯絡睇名單逐個撳；約會、陌生認識逐個數跟。</p>
+        <div class="day-nav">
+          <button class="sq-btn" id="datePrev" aria-label="上一日">‹</button>
+          <button class="sq-btn" id="dateNext" aria-label="下一日">›</button>
+          <button class="today-mini hidden" id="dateToday">今日</button>
+          <button class="mini-btn target-toggle" id="btnTargetToggle" aria-expanded="false">改目標</button>
+        </div>
+        <div class="target-panel hidden" id="targetPanel"><div class="target-row" id="targetRow"></div></div>
 
-        <div class="gcard qcard open" id="qc-contact">
+        <div class="gcard qcard" id="qc-contact">
           <button class="qhead" data-collapse="qc-contact" aria-label="展開或摺起今日聯絡名單">
-            <span class="qleft"><span class="qtitle">今日聯絡名單</span><span class="qsub" id="qsub-contact"></span></span>
-            <span class="qbig" id="qbig-contact"></span><span class="chev qchev">▾</span>
+            <span class="qtitle">今日 10 人聯絡名單</span>
+            <span class="qbig" id="qbig-contact"></span>
+            <span class="qsub" id="qsub-contact"></span>
+            <span class="qchev">▾</span>
           </button>
           <div class="qbody">
+            <div class="qbody-head"><button class="zoom-btn" id="btnZoom">⤢ 放大</button></div>
+            <button class="ghost-btn" id="btnToggleContactForm">＋ 新增聯絡</button>
+            <div class="inline-form hidden" id="contactForm">
+              <div class="fld"><label for="fc-name">人名</label><input id="fc-name" type="text" list="poolNames" placeholder="打名（池入面嘅人會出建議，新名照打都入得）" /></div>
+              <div class="fld"><label for="fc-purpose">目的</label><input id="fc-purpose" type="text" placeholder="想傾啲咩" /></div>
+              <div class="fld"><label for="fc-resp">回應（傾咗啲咩）</label><textarea id="fc-resp" rows="2" placeholder="傾咗啲咩、對方點回應"></textarea></div>
+              <div class="fld"><label for="fc-next">下一步</label><input id="fc-next" type="text" placeholder="跟住落嚟做啲咩" /></div>
+              <div class="fld"><label for="fc-status">狀態</label>
+                <select id="fc-status">
+                  <option value="2">已完成</option>
+                  <option value="1">未覆</option>
+                  <option value="0">未揾</option>
+                </select>
+              </div>
+              <div id="fc-warn"></div>
+              <div class="form-btns"><button class="teal-btn" id="fcSave">儲存</button><button class="ghost-btn" id="fcCancel">取消</button></div>
+            </div>
+            <div id="warnBannerSlot"></div>
             <div id="rosterFollow"></div>
-            <div id="formContactSlot"></div>
+            <div id="rosterNewInContact"></div>
           </div>
         </div>
 
         <div class="gcard qcard" id="qc-appt">
           <button class="qhead" data-collapse="qc-appt" aria-label="展開或摺起約會">
-            <span class="qleft"><span class="qtitle">約會</span><span class="qsub" id="qsub-appt"></span></span>
-            <span class="qbig" id="qbig-appt"></span><span class="chev qchev">▾</span>
+            <span class="qtitle">約會</span>
+            <span class="qbig" id="qbig-appt"></span>
+            <span class="qsub" id="qsub-appt"></span>
+            <span class="qchev">▾</span>
           </button>
           <div class="qbody">
-            <div id="apptListInside"></div>
-            <div id="formApptSlot"></div>
+            <div id="apptList"></div>
+            <button class="ghost-btn" id="btnToggleApptForm" style="margin-top:10px">＋ 新增約會</button>
+            <div class="inline-form hidden" id="apptForm">
+              <div class="fld"><label for="fa-name">人名</label><input id="fa-name" type="text" list="poolNames" placeholder="約咗邊個" /></div>
+              <div class="fld"><label for="fa-time">時間</label><input id="fa-time" type="time" /></div>
+              <div class="fld"><label for="fa-purpose">目的</label><input id="fa-purpose" type="text" placeholder="想傾啲咩" /></div>
+              <div class="fld"><label for="fa-status">狀態</label>
+                <select id="fa-status">
+                  <option value="2">已完成</option>
+                  <option value="1">未覆</option>
+                  <option value="0">未揾</option>
+                </select>
+              </div>
+              <div class="form-btns"><button class="teal-btn" id="faSave">儲存</button><button class="ghost-btn" id="faCancel">取消</button></div>
+            </div>
           </div>
         </div>
 
         <div class="gcard qcard" id="qc-stranger">
           <button class="qhead" data-collapse="qc-stranger" aria-label="展開或摺起陌生認識">
-            <span class="qleft"><span class="qtitle">陌生認識</span><span class="qsub" id="qsub-stranger"></span></span>
-            <span class="qbig" id="qbig-stranger"></span><span class="chev qchev">▾</span>
+            <span class="qtitle">陌生認識</span>
+            <span class="qbig" id="qbig-stranger"></span>
+            <span class="qsub" id="qsub-stranger"></span>
+            <span class="qchev">▾</span>
           </button>
           <div class="qbody">
             <div id="rosterNew"></div>
-            <div id="formNewSlot"></div>
+            <button class="ghost-btn" id="btnToggleNewForm" style="margin-top:6px">＋ 新增</button>
+            <div class="inline-form hidden" id="newForm">
+              <div class="fld"><label for="fn-name">人名</label><input id="fn-name" type="text" list="poolNames" placeholder="打名（池入面嘅人會出建議，新名照打都入得）" /></div>
+              <div class="fld"><label for="fn-purpose">目的</label><input id="fn-purpose" type="text" placeholder="想傾啲咩" /></div>
+              <div class="fld"><label for="fn-status">狀態</label>
+                <select id="fn-status">
+                  <option value="2">已完成</option>
+                  <option value="1">未覆</option>
+                  <option value="0">未揾</option>
+                </select>
+              </div>
+              <div id="fn-warn"></div>
+              <div class="form-btns"><button class="teal-btn" id="fnSave">儲存</button><button class="ghost-btn" id="fnCancel">取消</button></div>
+            </div>
           </div>
         </div>
 
         <div class="gcard qcard" id="qc-video">
           <button class="qhead" data-collapse="qc-video" aria-label="展開或摺起每日短片">
-            <span class="qleft"><span class="qtitle">每日短片</span><span class="qsub" id="qsub-video"></span></span>
-            <span class="qbig qbig-text" id="qbig-video"></span><span class="chev qchev">▾</span>
+            <span class="qtitle">每日短片<span class="vid-state" id="qbig-video">未出</span></span>
+            <span class="qsub" id="qsub-video"></span>
+            <span class="qchev">▾</span>
           </button>
-          <div class="qbody"><div id="videoBody"></div></div>
+          <div class="qbody">
+            <div class="seg" role="group" aria-label="每日短片狀態">
+              <button id="vidOff">未出</button>
+              <button id="vidOn">已出</button>
+            </div>
+          </div>
         </div>
 
-        <div id="formsArea"></div>
-
-        <div class="gcard collapse" id="closingCollapse">
-          <button class="chead" data-collapse="closingCollapse">今日收尾 <span style="color:var(--mut);font-size:13px">（睡前兩問・明日三件事）</span><span class="chev">▾</span></button>
-          <div class="cbody" id="closingBody"></div>
+        <div class="gcard qcard" id="qc-closing">
+          <button class="qhead" data-collapse="qc-closing" aria-label="展開或摺起今日收尾">
+            <span class="qtitle">今日收尾</span>
+            <span class="qsub">睡前兩問・明日三件事</span>
+            <span class="qchev">▾</span>
+          </button>
+          <div class="qbody"><div id="closingBody"></div></div>
         </div>
 
-        <div class="gcard collapse" id="weekCollapse">
-          <button class="chead" data-collapse="weekCollapse">近 7 日完成度 <span style="color:var(--mut);font-size:13px">（三個目標達標日數）</span><span class="chev">▾</span></button>
-          <div class="cbody" id="weekBody"></div>
+        <div class="gcard qcard" id="qc-week">
+          <button class="qhead" data-collapse="qc-week" aria-label="展開或摺起近 7 日一覽">
+            <span class="qtitle">近 7 日一覽</span>
+            <span class="qsub">三個目標達標日數</span>
+            <span class="qchev">▾</span>
+          </button>
+          <div class="qbody"><div id="weekBody"></div></div>
         </div>
 
-        <div class="gcard collapse" id="poolCollapse">
-          <button class="chead" data-collapse="poolCollapse">人名池 <span style="color:var(--mut);font-size:13px">（後台資料・跟緊旗）</span><span class="chev">▾</span></button>
-          <div class="cbody" id="poolBody"></div>
+        <div class="gcard qcard" id="qc-pool">
+          <button class="qhead" data-collapse="qc-pool" aria-label="展開或摺起人名池">
+            <span class="qtitle">人名池</span>
+            <span class="qsub">後台資料・跟緊旗</span>
+            <span class="qchev">▾</span>
+          </button>
+          <div class="qbody"><div id="poolBody"></div></div>
         </div>
 
-        <div class="gcard collapse" id="logCollapse">
-          <button class="chead" data-collapse="logCollapse">星變更日誌 <span style="color:var(--mut);font-size:13px">（金星升級每晚批次處理）</span><span class="chev">▾</span></button>
-          <div class="cbody" id="logBody"></div>
+        <div class="gcard qcard" id="qc-log">
+          <button class="qhead" data-collapse="qc-log" aria-label="展開或摺起星變更日誌">
+            <span class="qtitle">星變更日誌</span>
+            <span class="qsub">金星升級每晚批次處理</span>
+            <span class="qchev">▾</span>
+          </button>
+          <div class="qbody"><div id="logBody"></div></div>
         </div>
       </section>
 
       <!-- ============ 推會議 ============ -->
       <section id="tab-meet" class="hidden">
+        <h1 class="page-h1">推會議</h1>
+        <p class="page-desc2">上面揀會議，下面就睇返嗰個會：揀人邀請，逐個撳狀態跟進：未問 → 已邀請 → 會出席 / 唔出席。</p>
+
+        <div class="gcard qcard" id="qc-weekoverview">
+          <button class="qhead" data-collapse="qc-weekoverview" aria-label="展開或摺起本週總覽">
+            <span class="qtitle" id="weekOverviewTitle">本週總覽</span>
+            <span class="week-count" id="weekOverviewCount"></span>
+            <span class="qchev">▾</span>
+          </button>
+          <div class="qbody"><div id="weekOverviewBody"></div></div>
+        </div>
+
         <div class="meet-chips" id="meetChips"></div>
         <div id="meetDetail"></div>
-        <div class="sec-head"><h2>新增會議</h2></div>
-        <div class="gcard form-card">
-          <div class="form-grid two">
-            <div><label for="newMeetName">會議名稱</label><input id="newMeetName" type="text" placeholder="例如：產品體驗會" /></div>
-            <div><label for="newMeetWhen">時間</label><input id="newMeetWhen" type="text" placeholder="例如：逢星期六 15:00" /></div>
-          </div>
-          <div style="margin-top:12px"><button class="gold-btn" id="addMeetBtn">＋ 新增會議</button></div>
+
+        <button class="gold-btn" id="btnToggleMeetForm">＋ 新增會議</button>
+        <div class="gcard form-card hidden" id="meetForm" style="margin-top:12px">
+          <div class="fld"><label for="nm-name">名稱</label><input id="nm-name" type="text" placeholder="會議名稱" /></div>
+          <div class="fld"><label for="nm-date">日期</label><input id="nm-date" type="date" /></div>
+          <div class="fld"><label for="nm-time">時間</label><input id="nm-time" type="text" placeholder="例如：19:30" /></div>
+          <div class="fld"><label for="nm-place">地點</label><input id="nm-place" type="text" placeholder="喺邊度開" /></div>
+          <div class="form-btns"><button class="teal-btn" id="nmSave">儲存</button><button class="ghost-btn" id="nmCancel">取消</button></div>
         </div>
       </section>
 
       <!-- ============ 推優惠 ============ -->
       <section id="tab-offer" class="hidden">
+        <h1 class="page-h1">推優惠</h1>
+        <p class="page-desc2">每個優惠揀啱人嚟推，逐個撳狀態跟進：未推 → 已推 → 已買 / 唔啱。</p>
         <div id="offerList"></div>
-        <div class="sec-head"><h2>新增優惠</h2></div>
-        <div class="gcard form-card">
-          <div class="form-grid">
-            <div><label for="newOfferName">優惠名稱</label><input id="newOfferName" type="text" placeholder="例如：夏日清爽組合" /></div>
-            <div><label for="newOfferDesc">內容</label><input id="newOfferDesc" type="text" placeholder="例如：買二送一，本月限定" /></div>
-          </div>
-          <div style="margin-top:12px"><button class="gold-btn" id="addOfferBtn">＋ 新增優惠</button></div>
+        <button class="gold-btn" id="btnToggleOfferForm">＋ 新增優惠</button>
+        <div class="gcard form-card hidden" id="offerForm" style="margin-top:12px">
+          <div class="fld"><label for="no-name">名稱</label><input id="no-name" type="text" placeholder="優惠名稱" /></div>
+          <div class="fld"><label for="no-badge">有效期</label><input id="no-badge" type="text" placeholder="例如：2026-12-31 止" /></div>
+          <div class="fld"><label for="no-desc">內容</label><textarea id="no-desc" rows="3" placeholder="優惠內容"></textarea></div>
+          <div class="form-btns"><button class="teal-btn" id="noSave">儲存</button><button class="ghost-btn" id="noCancel">取消</button></div>
         </div>
       </section>
 
       <p class="foot-note">示範版：人名全部係虛構示範名，資料只存喺呢部裝置嘅瀏覽器。</p>
     </div>
 
-    <!-- focus overlay -->
-    <div class="focus-wrap" id="focusWrap" role="dialog" aria-modal="true">
-      <div class="gcard focus-card" id="focusCard"></div>
+    <!-- swap modal -->
+    <div class="modal-wrap" id="swapWrap" role="dialog" aria-modal="true">
+      <div class="gcard modal-card">
+        <div class="modal-head"><h3 id="swapTitle">替換</h3><button class="x-btn" id="swapClose" aria-label="關閉">✕</button></div>
+        <div class="confirm-box">
+          <p>順手確認（可跳過）：<b id="swapConfirmName"></b> 而家情況係？</p>
+          <div class="confirm-row">
+            <button class="confirm-chip" data-swapconfirm="same">照舊</button>
+            <button class="confirm-chip" data-swapconfirm="less">冇咁積極</button>
+            <button class="confirm-chip" data-swapconfirm="old">舊名單・唔使跟</button>
+          </div>
+          <p class="record-line hidden" id="swapRecord"></p>
+        </div>
+        <div class="random-box">
+          <div class="rb-head"><span>隨機抽一個</span><button class="gold-btn" id="swapRandom">🎲 隨機</button></div>
+          <p>有星星嘅人抽中機會高 3 倍；已經喺今日名單嘅人唔會抽到。</p>
+        </div>
+        <div class="picker">
+          <label class="fld-label" for="swapSearch">搜尋人名</label>
+          <input type="text" id="swapSearch" data-picksearch="swapList" placeholder="打名搵人（花名都搵到）…" />
+          <div class="newname-row">
+            <input type="text" id="swapNewName" placeholder="或者直接打個新名入嚟" />
+            <button class="use-name-btn" id="swapUseNew">用呢個名</button>
+          </div>
+          <h4 class="common-title">★ 常用（<span id="swapCount">0</span>）</h4>
+          <div class="pick-list" id="swapList" style="max-height:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- poster modal -->
+    <div class="modal-wrap" id="posterWrap" role="dialog" aria-modal="true">
+      <div class="gcard modal-card">
+        <div class="modal-head"><h3 id="posterTitle">海報</h3><button class="x-btn" id="posterClose" aria-label="關閉">✕</button></div>
+        <div class="poster big">海報</div>
+      </div>
     </div>
 
     <div class="toast" id="toast"></div>
@@ -579,6 +760,17 @@
     function agoStr(s){ if(!s) return '未上過名單'; var n = daysBetween(s, todayStr()); if(n <= 0) return '今日上名單'; if(n === 1) return '昨日上名單'; return n + ' 日前上名單'; }
     var WK = ['日','一','二','三','四','五','六'];
     function wkOf(s){ return '星期' + WK[new Date(s + 'T12:00:00').getDay()]; }
+    function wkShort(s){ return '週' + WK[new Date(s + 'T12:00:00').getDay()]; }
+    function fmtDateFull(s){
+      if(!s) return '';
+      var d = new Date(s + 'T12:00:00');
+      return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日・' + wkOf(s);
+    }
+    function mondayOf(s){
+      var d = new Date(s + 'T12:00:00');
+      var shift = (d.getDay() + 6) % 7;
+      return addDays(s, -shift);
+    }
     var uidSeq = 1;
     function uid(p){ return p + Date.now().toString(36) + (uidSeq++).toString(36); }
 
@@ -587,37 +779,39 @@
     var O_STATUS = ['未推','已推','已買','唔啱'];
     var STAR_NEXT = { none:'vip', vip:'abo', abo:'none' };
     var STAR_LABEL = { none:'無色', vip:'青星', abo:'金星' };
+    var REL_NAMES = ['初識','認識','熟絡','信任','自己人'];
+    var ORB = { 1:['#2e9be6','#7cc4f5'], 2:['#43bcc4','#8fd8dc'], 3:['#86b45e','#bcd68f'], 4:['#d9b84b','#f0d67c'], 5:['#eec93f','#f7dd72'] };
     var TARGETS = { contact:10, appt:3, stranger:1 };
     var FOLLOW_N = 10, NEW_N = 5;
-    var LS_KEY = 'zlgj.qingdan.v1';
+    var LS_KEY = 'zlgj.qingdan.v2';
 
     /* ================= seed (fictional demo data only) ================= */
     function seedPool(){
       var T = todayStr();
-      function P(name, alias, tag, cat, origin, type, rel, follow, next, lastOff, contactOff){
+      function P(name, alias, tag, cat, origin, type, rel, follow, next, lastOff, contactOff, note){
         return { id: uid('p'), name:name, alias:alias||'', tag:tag||'', cat:cat, origin:origin, type:type,
                  rel:rel, follow:!!follow, next:!!next,
                  lastRoster: lastOff == null ? null : addDays(T, -lastOff),
-                 lastContact: contactOff == null ? null : addDays(T, -contactOff), note:'' };
+                 lastContact: contactOff == null ? null : addDays(T, -contactOff), note:note||'' };
       }
       return [
-        P('陳大文','', '健身教練', 3, 'talent', 'abo', 4, true,  true,  3, 3),
-        P('李小芬','', '營養客',   3, 'vip',    'vip', 5, false, false, 5, 5),
-        P('黃家豪','', '老同學',   3, 'talent', 'abo', 3, true,  true,  4, 4),
-        P('林美玲','', '保險業',   2, 'vip',    'vip', 4, false, false, 2, 2),
-        P('張志強','', '工程師',   2, 'talent', 'none',2, false, false, 6, 6),
-        P('吳佩珊','', '教師',     4, 'vip',    'vip', 3, false, false, 8, 8),
-        P('劉俊傑','', '後生同事', 4, 'talent', 'none',2, true,  true,  9, 9),
-        P('何嘉欣','', '美容客',   4, 'vip',    'none',3, false, false, 10, 10),
-        P('鄭文博','', '會計師',   4, 'talent', 'abo', 4, false, false, 7, 7),
-        P('蔡詠詩','', '護士',     4, 'vip',    'vip', 5, false, false, 11, 11),
-        P('新朋友一','', '活動認識', 1, 'new', 'none', 1, false, false, null, null),
-        P('新朋友二','', '朋友介紹', 1, 'new', 'none', 2, false, false, null, null),
-        P('新朋友三','', '活動認識', 1, 'new', 'none', 1, false, false, null, null),
-        P('新朋友四','', '網上認識', 1, 'new', 'none', 1, false, false, null, null),
-        P('新朋友五','', '朋友介紹', 1, 'new', 'none', 2, false, false, null, null),
-        P('新朋友六','', '活動認識', 1, 'new', 'none', 1, false, false, null, null),
-        P('新朋友七','', '網上認識', 1, 'new', 'none', 1, false, false, null, null)
+        P('陳大文','', '健身教練', 3, 'talent', 'abo', 4, true,  true,  3, 3, '跟進傾偈，了解近況。'),
+        P('李小芬','', '營養客',   3, 'vip',    'vip', 5, false, false, 5, 5, '跟進近況同產品使用情況。'),
+        P('黃家豪','', '老同學',   3, 'talent', 'abo', 3, true,  true,  4, 4, '傾下近排工作同健康。'),
+        P('林美玲','', '保險業',   2, 'vip',    'vip', 4, false, false, 2, 2, '了解一下近況同需要。'),
+        P('張志強','', '工程師',   2, 'talent', 'none',2, false, false, 6, 6, '輕輕跟進，唔好太密。'),
+        P('吳佩珊','', '教師',     4, 'vip',    'vip', 3, false, false, 8, 8, '跟進產品用後感覺。'),
+        P('劉俊傑','', '後生同事', 4, 'talent', 'none',2, true,  true,  9, 9, '傾下近況，慢慢熟落。'),
+        P('何嘉欣','', '美容客',   4, 'vip',    'none',3, false, false, 10, 10, '跟進美容同健康話題。'),
+        P('鄭文博','', '會計師',   4, 'talent', 'abo', 4, false, false, 7, 7, '傾下工作近況。'),
+        P('蔡詠詩','', '護士',     4, 'vip',    'vip', 5, false, false, 11, 11, '跟進健康產品使用情況。'),
+        P('新朋友一','', '活動認識', 1, 'new', 'none', 1, false, false, null, null, ''),
+        P('新朋友二','', '朋友介紹', 1, 'new', 'none', 2, false, false, null, null, ''),
+        P('新朋友三','', '活動認識', 1, 'new', 'none', 1, false, false, null, null, ''),
+        P('新朋友四','', '網上認識', 1, 'new', 'none', 1, false, false, null, null, ''),
+        P('新朋友五','', '朋友介紹', 1, 'new', 'none', 2, false, false, null, null, ''),
+        P('新朋友六','', '活動認識', 1, 'new', 'none', 1, false, false, null, null, ''),
+        P('新朋友七','', '網上認識', 1, 'new', 'none', 1, false, false, null, null, '')
       ];
     }
     function findByName(pool, name){ for(var i=0;i<pool.length;i++){ if(pool[i].name === name) return pool[i]; } return null; }
@@ -625,13 +819,21 @@
       var pool = seedPool();
       var st = { pool: pool, days: {}, meetings: [], offers: [], starLog: [], selMeeting: null, viewDate: todayStr() };
       function MP(name, s){ var p = findByName(pool, name); return { pid: p ? p.id : null, name: name, st: s }; }
+      var mon = mondayOf(todayStr());
+      var tue = addDays(mon, 1), sun = addDays(mon, 6);
       st.meetings = [
-        { id: uid('m'), name:'業務大會', when:'逢星期四 20:00', people:[ MP('陳大文',1), MP('黃家豪',2), MP('李小芬',0), MP('鄭文博',3), MP('劉俊傑',1) ] },
-        { id: uid('m'), name:'營養班',   when:'逢星期六 11:00', people:[ MP('李小芬',2), MP('吳佩珊',1), MP('蔡詠詩',0), MP('何嘉欣',0) ] }
+        { id: uid('m'), name:'業務大會', date:tue, time:'19:30', place:'澳門旅遊塔 3樓囍宴廳8', fee:'MOP 30', age:'18歲以上',
+          people:[ MP('陳大文',2), MP('李小芬',2), MP('黃家豪',2), MP('林美玲',2), MP('張志強',1), MP('吳佩珊',2), MP('劉俊傑',0), MP('何嘉欣',2), MP('鄭文博',2), MP('蔡詠詩',3) ] },
+        { id: uid('m'), name:'張生營養班｜五色形氣學', date:sun, time:'10:00–17:30', place:'示範會議廳', fee:'MOP 50', age:'18歲以上',
+          people:[ MP('陳大文',1), MP('吳佩珊',2), MP('蔡詠詩',2), MP('何嘉欣',0) ] }
       ];
       st.offers = [
-        { id: uid('o'), name:'淨肝煥能組合', desc:'護肝＋活力配方組合，本月限定', people:[ MP('吳佩珊',1), MP('蔡詠詩',0), MP('何嘉欣',2) ] },
-        { id: uid('o'), name:'家居科技煥新禮遇', desc:'家居水機／空氣機換新優惠', people:[ MP('林美玲',1), MP('張志強',0), MP('鄭文博',3) ] }
+        { id: uid('o'), name:'紐崔萊基源漢本・淨肝煥能推廣組合', badge:'安利生活館開幕誌慶推廣・2026-11-09 起・禮品數量有限，送完即止',
+          desc:'買基源欣活飲品至少一件，加指定提升肝臟效能產品至少一件：滿直銷價目 MOP 1,238.5，送紐崔萊旅行萬用袋＋全新葆明飲品 3 條；滿 MOP 2,064，送旅行萬用袋＋全系列漢本萃飲品 10 條。',
+          people:[ MP('吳佩珊',1), MP('蔡詠詩',0), MP('何嘉欣',2), MP('李小芬',0) ] },
+        { id: uid('o'), name:'家居科技煥新禮遇', badge:'2026-11-01 至 2026-11-30・禮品數量有限，送完即止',
+          desc:'家居科技產品換新優惠：指定水機、空氣清新機以舊換新，享回贈同分期優惠，詳情向我查詢。',
+          people:[ MP('林美玲',1), MP('張志強',0), MP('鄭文博',3) ] }
       ];
       st.selMeeting = st.meetings[0].id;
       return st;
@@ -649,12 +851,10 @@
     }
     state = load();
     if(!state){ state = seedState(); autofill(todayStr()); save(); }
-    if(!state.days[state.viewDate] && state.viewDate !== todayStr()){ /* keep stored viewDate */ }
     if(!state.viewDate) state.viewDate = todayStr();
     if(!state.targets) state.targets = { contact: TARGETS.contact, appt: TARGETS.appt, stranger: TARGETS.stranger };
 
-    var ui = { tab:'daily', editingPid:null, noteKey:null, drawnPid:null, focusPid:null, dupWarn:null, openOffers:{} };
-    state.offers.forEach(function(o, i){ if(i === 0) ui.openOffers[o.id] = true; });
+    var ui = { tab:'daily', editingPid:null, swap:null, swapRecord:'', groupOpen:{ follow:true, newc:true } };
 
     function person(pid){ for(var i=0;i<state.pool.length;i++){ if(state.pool[i].id === pid) return state.pool[i]; } return null; }
     function dayOf(ds){
@@ -678,9 +878,7 @@
     }
 
     /* ================= autofill (living-list logic) ================= */
-    function eligibleFollow(p, ds, used){
-      return p.origin !== 'new' && !used[p.id] && !p.archived;
-    }
+    function eligibleFollow(p, ds, used){ return p.origin !== 'new' && !used[p.id] && !p.archived; }
     function byOldestRoster(a, b){
       var da = a.lastRoster ? daysBetween(a.lastRoster, todayStr()) : 9999;
       var db = b.lastRoster ? daysBetween(b.lastRoster, todayStr()) : 9999;
@@ -712,8 +910,6 @@
       var y = state.days[addDays(ds, -1)];
       var yOnRoster = {};
       if(y){ y.follow.concat(y.newc).forEach(function(r){ yOnRoster[r.pid] = 1; }); }
-
-      /* follow slot 1: yesterday unfinished carryover, max 4 */
       if(y){
         var co = 0;
         y.follow.forEach(function(r){
@@ -721,12 +917,10 @@
           if(r.st !== 2){ var p = person(r.pid); if(p && p.origin !== 'new' && takeFollow(p, r.st)) co++; }
         });
       }
-      /* follow slot 2: tight-follow people with a next step (or 3+ days off roster) */
       state.pool.filter(function(p){ return p.follow && eligibleFollow(p, ds, used); })
         .filter(function(p){ return p.next || !p.lastRoster || daysBetween(p.lastRoster, ds) >= 3; })
         .sort(byOldestRoster)
         .forEach(function(p){ if(day.follow.length < FOLLOW_N) takeFollow(p); });
-      /* follow slot 3: category 3 rotation, starred first, longest off roster first */
       state.pool.filter(function(p){ return p.cat === 3 && eligibleFollow(p, ds, used); })
         .sort(function(a, b){
           var sa = a.type !== 'none' ? 1 : 0, sb = b.type !== 'none' ? 1 : 0;
@@ -734,11 +928,9 @@
           return byOldestRoster(a, b);
         })
         .forEach(function(p){ if(day.follow.length < FOLLOW_N) takeFollow(p); });
-      /* follow slot 4: category 2, every other day */
       state.pool.filter(function(p){ return p.cat === 2 && eligibleFollow(p, ds, used) && !yOnRoster[p.id]; })
         .sort(byOldestRoster)
         .forEach(function(p){ if(day.follow.length < FOLLOW_N) takeFollow(p); });
-      /* follow slot 5: category 4, 7-day cooldown + longest since contact, then top up */
       state.pool.filter(function(p){ return p.cat === 4 && eligibleFollow(p, ds, used); })
         .filter(function(p){ return !p.lastRoster || daysBetween(p.lastRoster, ds) >= 7; })
         .sort(byOldestContact)
@@ -746,8 +938,6 @@
       state.pool.filter(function(p){ return eligibleFollow(p, ds, used); })
         .sort(byOldestRoster)
         .forEach(function(p){ if(day.follow.length < FOLLOW_N) takeFollow(p); });
-
-      /* new-contact slots: yesterday unfinished newcomers carry over first */
       if(y){
         y.newc.forEach(function(r){
           if(day.newc.length >= NEW_N) return;
@@ -763,8 +953,6 @@
         .forEach(function(p){ if(day.newc.length < NEW_N) takeNew(p); });
       return true;
     }
-
-    /* refill after a removal: same-category first, cooldown respected when possible */
     function pickRefill(ds, group, removedCat){
       var day = dayOf(ds);
       var inRoster = {};
@@ -818,8 +1006,12 @@
       if(state.starLog.length > 60) state.starLog.length = 60;
       save();
     }
-    function starBtnClass(t){ return t === 'vip' ? 's-vip' : (t === 'abo' ? 's-abo' : ''); }
     function starChar(t){ return t === 'none' ? '☆' : '★'; }
+    function srcChip(p){
+      if(p.origin === 'new') return '新人';
+      if(p.type === 'vip' || p.origin === 'vip') return '人才池・VIP';
+      return '人才池';
+    }
 
     /* ================= duplicate-name guard ================= */
     function similarPeople(name, excludeId){
@@ -831,6 +1023,72 @@
                p.name.indexOf(name) >= 0 || name.indexOf(p.name) >= 0;
       });
     }
+    function warnHTML(sim, kind){
+      return '<div class="warn-box">池入面已經有差唔多嘅名：<b>' + sim.map(function(p){ return esc(p.name); }).join('、') + '</b>，係咪同一位？' +
+        '<div class="row"><button class="mini-btn" data-dup-use="' + esc(sim[0].name) + '" data-dup-kind="' + kind + '">用返呢位</button>' +
+        '<button class="mini-btn" data-dup-force="' + kind + '">唔係，照樣新增</button></div></div>';
+    }
+
+    /* ================= relationship slider ================= */
+    function relHTML(p, mini){
+      var pct = (p.rel - 1) / 4 * 100;
+      var c = ORB[p.rel] || ORB[1];
+      var dots = '';
+      for(var i = 0; i < 5; i++) dots += '<span class="rel-dot" style="left:' + (i * 25) + '%"></span>';
+      return '<div class="rel' + (mini ? ' mini' : '') + '">' +
+        '<div class="rel-track" data-relslider="' + p.id + '" tabindex="0" role="slider" aria-label="關係" aria-valuemin="1" aria-valuemax="5" aria-valuenow="' + p.rel + '">' +
+          '<div class="rel-grad" style="clip-path:inset(0 ' + (100 - pct) + '% 0 0)"></div>' + dots +
+          '<div class="rel-orb" style="left:' + pct + '%;background:radial-gradient(circle at 38% 32%, ' + c[1] + ', ' + c[0] + ' 62%);box-shadow:0 0 9px ' + c[0] + '59"></div>' +
+        '</div><span class="rel-lvl">' + REL_NAMES[p.rel - 1] + '</span></div>';
+    }
+    function relApplyUI(pid){
+      var p = person(pid); if(!p) return;
+      var pct = (p.rel - 1) / 4 * 100;
+      var c = ORB[p.rel] || ORB[1];
+      document.querySelectorAll('[data-relslider="' + pid + '"]').forEach(function(tr){
+        var grad = tr.querySelector('.rel-grad');
+        if(grad) grad.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+        var orb = tr.querySelector('.rel-orb');
+        if(orb){
+          orb.style.left = pct + '%';
+          orb.style.background = 'radial-gradient(circle at 38% 32%, ' + c[1] + ', ' + c[0] + ' 62%)';
+          orb.style.boxShadow = '0 0 9px ' + c[0] + '59';
+        }
+        tr.setAttribute('aria-valuenow', p.rel);
+        var wrap = tr.parentElement;
+        var lvl = wrap ? wrap.querySelector('.rel-lvl') : null;
+        if(lvl) lvl.textContent = REL_NAMES[p.rel - 1];
+      });
+    }
+    function relSetFromEvent(track, e){
+      var rect = track.getBoundingClientRect();
+      var f = (e.clientX - rect.left) / rect.width;
+      f = Math.max(0, Math.min(1, f));
+      return Math.round(f * 4) + 1;
+    }
+    document.addEventListener('pointerdown', function(e){
+      var tr = e.target.closest ? e.target.closest('[data-relslider]') : null;
+      if(!tr) return;
+      e.preventDefault();
+      var pid = tr.getAttribute('data-relslider');
+      var p = person(pid); if(!p) return;
+      var v0 = relSetFromEvent(tr, e);
+      if(v0 !== p.rel){ p.rel = v0; relApplyUI(pid); }
+      function move(ev){ var v = relSetFromEvent(tr, ev); if(v !== p.rel){ p.rel = v; relApplyUI(pid); } }
+      function up(){ document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); save(); }
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', up);
+    });
+    document.addEventListener('keydown', function(e){
+      var tr = e.target.closest ? e.target.closest('[data-relslider]') : null;
+      if(!tr) return;
+      var p = person(tr.getAttribute('data-relslider')); if(!p) return;
+      if(e.key === 'ArrowRight' || e.key === 'ArrowUp'){ p.rel = Math.min(5, p.rel + 1); }
+      else if(e.key === 'ArrowLeft' || e.key === 'ArrowDown'){ p.rel = Math.max(1, p.rel - 1); }
+      else return;
+      e.preventDefault();
+      relApplyUI(p.id); save();
+    });
 
     /* ================= render: shared bits ================= */
     function renderDatalist(){
@@ -843,22 +1101,14 @@
       });
       $('poolNames').innerHTML = html;
     }
-    function metaLine(p){
-      var bits = [];
-      if(p.tag) bits.push('<span class="tagchip">' + esc(p.tag) + '</span>');
-      if(p.alias) bits.push('別名：' + esc(p.alias));
-      bits.push('種類' + ['','一','二','三','四'][p.cat]);
-      bits.push(agoStr(p.lastRoster));
-      return bits.join(' ');
-    }
-
-    /* ================= render: daily ================= */
     function fmtPill(ds){
       var d = new Date(ds + 'T12:00:00');
       var s = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日・' + wkOf(ds);
       if(ds === todayStr()) s += '・今日';
       return s;
     }
+
+    /* ================= render: daily header / progress ================= */
     function renderProgress(){
       var T = state.targets || TARGETS;
       var ds = state.viewDate;
@@ -866,24 +1116,30 @@
       var d = dayOf(ds);
       var attempted = d.follow.filter(function(r){ return r.st > 0; }).length;
       var notYet = d.follow.filter(function(r){ return r.st === 0; }).length;
-      function big(val, target, done){
+      function big(val, target){
         return '<span class="num">' + val + '</span> <span class="of">/ ' + target + '</span>';
       }
-      var bc = $('qbig-contact'); bc.innerHTML = big(c.contact, T.contact, c.contact >= T.contact); bc.classList.toggle('done', c.contact >= T.contact);
+      var bc = $('qbig-contact'); bc.innerHTML = big(c.contact, T.contact); bc.classList.toggle('done', c.contact >= T.contact);
       $('qsub-contact').innerHTML = '出咗手 ' + attempted + ' / ' + T.contact + '・仲有 ' + notYet + ' 人未揾<br />今日聯絡數 <b>' + c.contact + '</b> / ' + T.contact;
-      var ba = $('qbig-appt'); ba.innerHTML = big(c.appt, T.appt, c.appt >= T.appt); ba.classList.toggle('done', c.appt >= T.appt);
+      var ba = $('qbig-appt'); ba.innerHTML = big(c.appt, T.appt); ba.classList.toggle('done', c.appt >= T.appt);
       $('qsub-appt').textContent = c.appt >= T.appt ? '已達標 ✓' : '仲差 ' + (T.appt - c.appt) + ' 個';
-      var bs = $('qbig-stranger'); bs.innerHTML = big(c.stranger, T.stranger, c.stranger >= T.stranger); bs.classList.toggle('done', c.stranger >= T.stranger);
+      var bs = $('qbig-stranger'); bs.innerHTML = big(c.stranger, T.stranger); bs.classList.toggle('done', c.stranger >= T.stranger);
       $('qsub-stranger').textContent = c.stranger >= T.stranger ? '已達標 ✓' : '仲差 ' + (T.stranger - c.stranger) + ' 個';
       var bv = $('qbig-video'); bv.textContent = d.video ? '已出' : '未出'; bv.classList.toggle('on', !!d.video);
       $('qsub-video').textContent = d.video ? '今日短片已出 ✓' : '今日短片未出';
+      $('vidOff').classList.toggle('on', !d.video);
+      $('vidOn').classList.toggle('on', !!d.video);
       var doneCats = (c.contact >= T.contact ? 1 : 0) + (c.appt >= T.appt ? 1 : 0) + (c.stranger >= T.stranger ? 1 : 0) + (d.video ? 1 : 0);
       var frac = doneCats / 4;
-      var circ = 2 * Math.PI * 24;
+      var circ = 2 * Math.PI * 26;
       $('ringBox').innerHTML =
-        '<svg width="58" height="58" viewBox="0 0 58 58"><circle cx="29" cy="29" r="24" fill="none" stroke="rgba(120,150,190,.25)" stroke-width="5"></circle>' +
-        '<circle cx="29" cy="29" r="24" fill="none" stroke="var(--gold)" stroke-width="5" stroke-linecap="round" stroke-dasharray="' + circ + '" stroke-dashoffset="' + (circ * (1 - frac)) + '"></circle></svg>' +
+        '<svg width="66" height="66" viewBox="0 0 66 66"><circle cx="33" cy="33" r="26" fill="none" stroke="rgba(120,150,190,.28)" stroke-width="5.5"></circle>' +
+        '<circle cx="33" cy="33" r="26" fill="none" stroke="#3a5a86" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="' + circ + '" stroke-dashoffset="' + (circ * (1 - frac)) + '"></circle></svg>' +
+        '<span style="position:absolute;left:50%;top:1px;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:var(--goldbright);box-shadow:0 0 7px rgba(242,201,60,.7)"></span>' +
         '<div class="ring-txt"><b>' + doneCats + '/4</b><span>完成</span></div>';
+      $('warnBannerSlot').innerHTML = notYet > 0
+        ? '<div class="warn-banner">⚠ 仲有 ' + notYet + ' 人未揾 — 未出手嗰啲唔計入今日聯絡數，記得逐個跟。</div>'
+        : '';
     }
     function renderTargets(){
       var T = state.targets || TARGETS;
@@ -899,141 +1155,69 @@
       });
     }
     function renderDateNav(){
-      var ds = state.viewDate;
-      $('datePillText').textContent = fmtPill(ds);
-      $('dateToday').classList.toggle('hidden', ds === todayStr());
+      $('datePillText').textContent = fmtPill(state.viewDate);
+      $('dateToday').classList.toggle('hidden', state.viewDate === todayStr());
     }
+
+    /* ================= render: person cards ================= */
     function rowHTML(r, group){
       var p = person(r.pid);
       if(!p) return '';
-      var drawn = ui.drawnPid === p.id ? ' drawn' : '';
       var arch = p.archived ? ' archived' : '';
       if(ui.editingPid === p.id){
-        return '<div class="gcard prow' + drawn + '" data-pid="' + p.id + '"><div class="edit-box">' +
-          '<div><label>主名</label><input id="ed-name" type="text" value="' + esc(p.name) + '" /></div>' +
-          '<div class="edit-row"><div><label>別名</label><input id="ed-alias" type="text" value="' + esc(p.alias) + '" /></div>' +
-          '<div><label>識別籤</label><input id="ed-tag" type="text" value="' + esc(p.tag) + '" /></div></div>' +
-          '<div id="ed-warn"></div>' +
-          '<div class="edit-row"><button class="gold-btn" data-act="save-edit" data-pid="' + p.id + '">儲存</button>' +
+        var noteValE = (r.note != null && r.note !== '') ? r.note : (p.note || '');
+        return '<div class="pcard editing' + arch + '" data-pid="' + p.id + '">' +
+          '<div class="edit-top"><button class="teal-btn" data-act="save-edit" data-pid="' + p.id + '">儲存（全部名單一齊改）</button>' +
           '<button class="ghost-btn" data-act="cancel-edit">取消</button></div>' +
-          '</div></div>';
+          '<div class="edit-fields">' +
+            '<div class="fld"><label>人名</label><input id="ed-name" type="text" value="' + esc(p.name) + '" /></div>' +
+            '<div class="fld"><label>目的</label><input id="ed-note" type="text" value="' + esc(noteValE) + '" placeholder="呢個人今日要做啲咩" /></div>' +
+            '<div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">' +
+              '<div class="fld" style="flex:1;min-width:110px"><label>別名</label><input id="ed-alias" type="text" value="' + esc(p.alias) + '" /></div>' +
+              '<div class="fld" style="flex:1;min-width:110px"><label>識別籤</label><input id="ed-tag" type="text" value="' + esc(p.tag) + '" /></div>' +
+              '<button class="star-cycle ' + (p.type === 'none' ? '' : p.type) + '" data-act="star" data-pid="' + p.id + '" aria-label="切換星色">' + starChar(p.type) + '</button>' +
+            '</div>' +
+            '<div id="ed-warn"></div>' +
+          '</div>' +
+          '<div class="p-row3">' + relHTML(p, false) +
+            '<button class="swap-sq" data-act="swap" data-group="' + group + '" data-pid="' + p.id + '" aria-label="換人">⇄</button>' +
+            '<button class="status-pill st-' + r.st + '" data-act="status" data-group="' + group + '" data-pid="' + p.id + '">' + D_STATUS[r.st] + '</button></div>' +
+          '<div style="margin-top:10px"><button class="mini-btn danger" data-act="remove" data-group="' + group + '" data-pid="' + p.id + '">刪除（移出今日名單）</button></div>' +
+          '</div>';
       }
-      var noteKey = group + ':' + p.id;
+      var starHTML = p.type !== 'none' ? '<span class="p-star ' + p.type + '">★</span>' : '';
       var noteVal = (r.note != null && r.note !== '') ? r.note : (p.note || '');
-      var purposeHTML;
-      if(ui.noteKey === noteKey){
-        purposeHTML = '<div class="note-edit"><input id="note-inp" type="text" value="' + esc(noteVal) + '" placeholder="呢個人今日要做啲咩" />' +
-          '<button class="gold-btn" data-act="note-save" data-group="' + group + '" data-pid="' + p.id + '">儲存</button>' +
-          '<button class="ghost-btn" data-act="note-cancel">取消</button></div>';
-      } else {
-        purposeHTML = '<div class="purpose' + (noteVal ? '' : ' empty') + '" data-act="note" data-group="' + group + '" data-pid="' + p.id + '"><span class="pl">要做啲咩</span>' + (noteVal ? esc(noteVal) : '㩒嚟寫低') + '</div>';
-      }
-      var confirmHTML = '<div class="confirm-row">' +
-        '<button class="confirm-chip' + (p.confirm === 'same' ? ' on' : '') + '" data-act="cf-same" data-pid="' + p.id + '">照舊</button>' +
-        '<button class="confirm-chip' + (p.confirm === 'less' ? ' on' : '') + '" data-act="cf-less" data-pid="' + p.id + '">冇咁積極</button>' +
-        '<button class="confirm-chip' + (p.confirm === 'old' ? ' on-old' : '') + '" data-act="cf-old" data-pid="' + p.id + '">舊名單・唔使跟</button>' +
-        (p.archived ? '<span class="arch-tag">已收起・唔入抽人同揀人</span>' : '') +
+      return '<div class="pcard' + arch + '" data-pid="' + p.id + '">' +
+        '<div class="p-row1"><span class="p-name">' + esc(p.name) + '</span>' + starHTML +
+          '<span class="src-chip">' + srcChip(p) + '</span>' +
+          (p.archived ? '<span class="arch-tag">已收起</span>' : '') + '</div>' +
+        '<div class="p-row2"><button class="rename-chip" data-act="edit" data-pid="' + p.id + '">✎ 改名</button></div>' +
+        '<div class="p-row3">' + relHTML(p, false) +
+          '<button class="swap-sq" data-act="swap" data-group="' + group + '" data-pid="' + p.id + '" aria-label="換人">⇄</button>' +
+          '<button class="status-pill st-' + r.st + '" data-act="status" data-group="' + group + '" data-pid="' + p.id + '">' + D_STATUS[r.st] + '</button></div>' +
+        '<div class="p-row4">' + (noteVal ? esc(noteVal) + ' ' : '<span style="color:var(--mut2)">未寫目的 </span>') +
+          '<button class="edit-link" data-act="edit" data-pid="' + p.id + '">㩒嚟改</button></div>' +
         '</div>';
-      return '<div class="gcard prow' + drawn + arch + '" data-pid="' + p.id + '">' +
-        '<div class="line1">' +
-          '<button class="star-btn ' + starBtnClass(p.type) + '" data-act="star" data-pid="' + p.id + '" aria-label="切換星色">' + starChar(p.type) + '</button>' +
-          '<div class="pname"><div class="nm">' + esc(p.name) + '</div><div class="meta">' + metaLine(p) + '</div></div>' +
-          '<button class="status-pill st-' + r.st + '" data-act="status" data-group="' + group + '" data-pid="' + p.id + '">' + D_STATUS[r.st] + '</button>' +
-        '</div>' +
-        '<div class="line2">' +
-          '<div class="rel-wrap"><span class="rl">關係</span>' +
-            '<input type="range" min="1" max="5" step="1" value="' + p.rel + '" data-rel="' + p.id + '" aria-label="關係值" />' +
-            '<span class="rv" id="rv-' + p.id + '">' + p.rel + '</span></div>' +
-          '<button class="mini-btn" data-act="focus" data-pid="' + p.id + '">焦點</button>' +
-          '<button class="mini-btn" data-act="swap" data-group="' + group + '" data-pid="' + p.id + '">換人</button>' +
-          '<button class="mini-btn" data-act="edit" data-pid="' + p.id + '">改名</button>' +
-          '<button class="mini-btn danger" data-act="remove" data-group="' + group + '" data-pid="' + p.id + '">刪除</button>' +
-        '</div>' + purposeHTML + confirmHTML + '</div>';
     }
     function groupHTML(title, rows, group, target){
-      var done = rows.filter(function(r){ return r.st === 2; }).length;
-      var h = '<div class="sec-head"><h2>' + title + '</h2><span class="cnt">' + rows.length + ' / ' + target + ' 人・已完成 ' + done + '</span></div>';
-      if(!rows.length) h += '<div class="gcard empty-card"><p>呢組暫時冇人。</p></div>';
-      else h += '<div class="plist">' + rows.map(function(r){ return rowHTML(r, group); }).join('') + '</div>';
-      return h;
-    }
-    function renderForms(){
-      $('formContactSlot').innerHTML =
-        '<div class="inner-form"><h4>＋ 新增聯絡（入跟進組）</h4>' +
-          '<div><label for="f-contact-name">姓名</label><input id="f-contact-name" type="text" list="poolNames" placeholder="打名，池入面嘅人會自動建議" /></div>' +
-          '<div id="warn-contact"></div>' +
-          '<div style="margin-top:10px"><button class="gold-btn" id="btn-contact">加入並標為已完成</button></div></div>';
-      $('formApptSlot').innerHTML =
-        '<div class="inner-form"><h4>＋ 新增約會</h4>' +
-          '<div class="form-grid two"><div><label for="f-appt-name">姓名</label><input id="f-appt-name" type="text" list="poolNames" placeholder="約咗邊個" /></div>' +
-          '<div><label for="f-appt-time">時間</label><input id="f-appt-time" type="time" /></div></div>' +
-          '<div style="margin-top:10px"><button class="gold-btn" id="btn-appt">儲存約會</button></div></div>';
-      $('formNewSlot').innerHTML =
-        '<div class="inner-form"><h4>＋ 新增新聯絡（入新聯絡組）</h4>' +
-          '<div><label for="f-new-name">姓名</label><input id="f-new-name" type="text" list="poolNames" placeholder="新認識嘅人" /></div>' +
-          '<div id="warn-new"></div>' +
-          '<div style="margin-top:10px"><button class="gold-btn" id="btn-new">加入並標為已完成</button></div></div>';
-      $('formsArea').innerHTML =
-        '<div class="util-row">' +
-          '<button class="blue-btn" id="btn-draw">🎲 隨機抽人</button>' +
-          '<button class="ghost-btn" id="btn-expand-all">全部展開</button></div>';
-      $('btn-contact').addEventListener('click', addContact);
-      $('btn-appt').addEventListener('click', addAppt);
-      $('btn-new').addEventListener('click', addNewContact);
-      $('btn-draw').addEventListener('click', drawRandom);
-      $('btn-expand-all').addEventListener('click', function(){
-        document.querySelectorAll('.collapse, .qcard').forEach(function(c){ c.classList.add('open'); });
-      });
-    }
-    function renderAppts(){
-      var d = dayOf(state.viewDate);
-      $('apptListInside').innerHTML = d.appts.length
-        ? d.appts.map(function(a, i){
-            return '<div class="appt-row"><span class="tm">' + esc(a.time || '—') + '</span><span style="flex:1">' + esc(a.name) + '</span>' +
-                   '<button class="mini-btn danger" data-act="del-appt" data-i="' + i + '">刪除</button></div>';
-          }).join('')
-        : '<p style="color:var(--mut);margin:6px 0">呢日未有約會記錄。用下面「＋ 新增約會」加。</p>';
-    }
-    function renderPool(){
-      var order = { 3:0, 2:1, 4:2, 1:3 };
-      var list = state.pool.slice().sort(function(a, b){
-        if(order[a.cat] !== order[b.cat]) return order[a.cat] - order[b.cat];
-        return byOldestRoster(a, b);
-      });
-      $('poolBody').innerHTML = list.map(function(p){
-        return '<div class="pool-row">' +
-          '<span style="color:' + (p.type === 'vip' ? 'var(--teal)' : p.type === 'abo' ? 'var(--gold)' : '#54657c') + ';font-size:18px">' + starChar(p.type) + '</span>' +
-          '<span class="pn">' + esc(p.name) + '</span>' +
-          '<span class="pm">種類' + ['','一','二','三','四'][p.cat] + '・關係 ' + p.rel + '・' + agoStr(p.lastRoster) + '</span>' +
-          '<span style="flex:1"></span>' +
-          (p.archived ? '<span class="arch-tag">舊名單・唔使跟</span><button class="flag-chip" data-act="unarchive" data-pid="' + p.id + '">恢復</button>' : '') +
-          '<button class="flag-chip' + (p.follow ? ' on' : '') + '" data-act="flag-follow" data-pid="' + p.id + '">跟緊</button>' +
-          '<button class="flag-chip' + (p.next ? ' on' : '') + '" data-act="flag-next" data-pid="' + p.id + '">有下一步</button>' +
-          '</div>';
-      }).join('') +
-      '<div style="margin-top:12px"><button class="mini-btn danger" id="btn-reset">重置示範資料</button></div>';
-      $('btn-reset').addEventListener('click', function(){
-        localStorage.removeItem(LS_KEY);
-        state = seedState(); autofill(todayStr()); state.viewDate = todayStr(); save();
-        ui.editingPid = null; ui.drawnPid = null;
-        renderAll(); toast('已重置做示範資料');
-      });
-    }
-    function renderLog(){
-      if(!state.starLog.length){
-        $('logBody').innerHTML = '<p style="color:var(--mut);margin:6px 0">未有星變更。㩒任何人嗰粒星就會記錄喺度。</p>';
-        return;
+      var attempted = rows.filter(function(r){ return r.st > 0; }).length;
+      var open = ui.groupOpen[group];
+      var h = '<button class="group-head' + (open ? '' : ' closed') + '" data-grouptoggle="' + group + '">' +
+        '<h3>' + title + '（' + target + '）</h3><span class="gsub">出咗手 ' + attempted + ' / ' + target + '</span>' +
+        '<span class="gchev">▾</span></button>';
+      if(open){
+        if(!rows.length) h += '<p class="empty-note">呢組暫時冇人。</p>';
+        else h += '<div class="plist">' + rows.map(function(r){ return rowHTML(r, group); }).join('') + '</div>';
       }
-      $('logBody').innerHTML = state.starLog.slice(0, 20).map(function(e){
-        var extra = e.to === 'abo' ? '・<span style="color:var(--gold2)">待晚間批次處理</span>' : '';
-        return '<div class="log-row"><span class="who">' + esc(e.name) + '</span>：' + STAR_LABEL[e.from] + ' → ' + STAR_LABEL[e.to] + ' <span style="color:var(--mut2)">' + esc(e.at) + '</span>' + extra + '</div>';
-      }).join('');
+      return h;
     }
     function renderRoster(){
       var ds = state.viewDate;
       if(!hasRoster(ds)){
-        $('rosterFollow').innerHTML = '<div class="empty-card" style="padding:16px 10px;text-align:center"><p style="color:var(--mut);margin:0 0 12px">呢日未有名單。</p>' +
+        var emptyHTML = '<div style="padding:14px 4px;text-align:center"><p class="empty-note" style="margin-bottom:12px">呢日未有名單。</p>' +
           '<button class="gold-btn" id="btn-autofill">自動排今日名單</button></div>';
+        $('rosterFollow').innerHTML = emptyHTML;
+        $('rosterNewInContact').innerHTML = '';
         $('rosterNew').innerHTML = '';
         $('btn-autofill').addEventListener('click', function(){
           if(autofill(ds)){ save(); renderAll(); toast('已自動排好名單：跟進 ' + dayOf(ds).follow.length + ' 人＋新聯絡 ' + dayOf(ds).newc.length + ' 人'); }
@@ -1041,29 +1225,32 @@
         return;
       }
       var d = dayOf(ds);
-      function listHTML(rows, group, target){
-        var done = rows.filter(function(r){ return r.st === 2; }).length;
-        var h = '<div class="qcnt">' + rows.length + ' / ' + target + ' 人・已完成 ' + done + '</div>';
-        if(!rows.length) h += '<p style="color:var(--mut);margin:4px 2px 8px">呢組暫時冇人。</p>';
-        else h += '<div class="plist">' + rows.map(function(r){ return rowHTML(r, group); }).join('') + '</div>';
-        return h;
-      }
-      $('rosterFollow').innerHTML = listHTML(d.follow, 'follow', FOLLOW_N);
-      $('rosterNew').innerHTML = listHTML(d.newc, 'newc', NEW_N);
+      $('rosterFollow').innerHTML = groupHTML('跟進', d.follow, 'follow', FOLLOW_N);
+      $('rosterNewInContact').innerHTML = groupHTML('新聯絡', d.newc, 'newc', NEW_N);
+      $('rosterNew').innerHTML = groupHTML('新聯絡', d.newc, 'newc', NEW_N);
+    }
+    function renderAppts(){
+      var d = dayOf(state.viewDate);
+      $('apptList').innerHTML = d.appts.length
+        ? d.appts.map(function(a, i){
+            return '<div class="appt-row"><span class="tm">' + esc(a.time || '—') + '</span>' +
+              '<span class="who">' + esc(a.name) + '</span>' +
+              (a.purpose ? '<span class="pp">' + esc(a.purpose) + '</span>' : '') +
+              '<span style="flex:1"></span>' +
+              '<span class="status-pill st-' + (a.st == null ? 2 : a.st) + '" style="min-width:76px;min-height:38px;font-size:13.5px;padding:5px 12px">' + D_STATUS[a.st == null ? 2 : a.st] + '</span>' +
+              '<button class="mini-btn danger" data-act="del-appt" data-i="' + i + '">刪除</button></div>';
+          }).join('')
+        : '<p class="empty-note">呢日未有約會記錄。用下面「＋ 新增約會」加。</p>';
     }
     function renderClosing(){
       var d = dayOf(state.viewDate);
-      $('videoBody').innerHTML =
-        '<div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap"><button class="toggle-chip' + (d.video ? ' on' : '') + '" id="cl-video">' + (d.video ? '✓ 已出' : '標記已出') + '</button>' +
-        '<span style="color:var(--mut);font-size:13px">' + (d.video ? '今日短片已出，好嘢。' : '出咗片就㩒呢個掣標記。') + '</span></div>';
       $('closingBody').innerHTML =
-        '<div class="close-card" style="padding:0;margin:0">' +
+        '<div class="close-fields">' +
         '<label for="cl-q1" style="margin-top:2px">睡前兩問（一）</label><input type="text" id="cl-q1" value="' + esc(d.q1) + '" placeholder="寫低答案" />' +
         '<label for="cl-q2">睡前兩問（二）</label><input type="text" id="cl-q2" value="' + esc(d.q2) + '" placeholder="寫低答案" />' +
         '<label>明日三件事</label>' +
         [0,1,2].map(function(i){ return '<input type="text" id="cl-tom-' + i + '" value="' + esc(d.tom[i] || '') + '" placeholder="第 ' + (i+1) + ' 件" style="margin-bottom:7px" />'; }).join('') +
         '</div>';
-      $('cl-video').addEventListener('click', function(){ d.video = !d.video; save(); renderClosing(); renderProgress(); });
       ['q1','q2'].forEach(function(k){
         $('cl-' + k).addEventListener('change', function(){ d[k] = this.value; save(); });
       });
@@ -1090,195 +1277,265 @@
       }
       $('weekBody').innerHTML = '<p style="color:var(--mut);margin:4px 0 8px">近 7 日達標日數：聯絡 ' + hits.contact + ' 日・約會 ' + hits.appt + ' 日・陌生認識 ' + hits.stranger + ' 日</p>' + rows;
     }
+    function renderPool(){
+      var order = { 3:0, 2:1, 4:2, 1:3 };
+      var list = state.pool.slice().sort(function(a, b){
+        if(order[a.cat] !== order[b.cat]) return order[a.cat] - order[b.cat];
+        return byOldestRoster(a, b);
+      });
+      $('poolBody').innerHTML = list.map(function(p){
+        return '<div class="pool-row">' +
+          '<span style="color:' + (p.type === 'vip' ? 'var(--teal)' : p.type === 'abo' ? 'var(--gold)' : '#54657c') + ';font-size:18px">' + starChar(p.type) + '</span>' +
+          '<span class="pn">' + esc(p.name) + '</span>' +
+          '<span class="pm">種類' + ['','一','二','三','四'][p.cat] + '・關係 ' + REL_NAMES[p.rel - 1] + '・' + agoStr(p.lastRoster) + '</span>' +
+          '<span style="flex:1"></span>' +
+          (p.archived ? '<span class="arch-tag">舊名單・唔使跟</span><button class="flag-chip" data-act="unarchive" data-pid="' + p.id + '">恢復</button>' : '') +
+          '<button class="flag-chip' + (p.follow ? ' on' : '') + '" data-act="flag-follow" data-pid="' + p.id + '">跟緊</button>' +
+          '<button class="flag-chip' + (p.next ? ' on' : '') + '" data-act="flag-next" data-pid="' + p.id + '">有下一步</button>' +
+          '</div>';
+      }).join('') +
+      '<div style="margin-top:12px"><button class="mini-btn danger" id="btn-reset">重置示範資料</button></div>';
+      $('btn-reset').addEventListener('click', function(){
+        localStorage.removeItem(LS_KEY);
+        state = seedState(); autofill(todayStr()); state.viewDate = todayStr(); save();
+        ui.editingPid = null;
+        renderAll(); toast('已重置做示範資料');
+      });
+    }
+    function renderLog(){
+      if(!state.starLog.length){
+        $('logBody').innerHTML = '<p class="empty-note">未有星變更。喺編輯人卡或者常用清單㩒粒星就會記錄喺度。</p>';
+        return;
+      }
+      $('logBody').innerHTML = state.starLog.slice(0, 20).map(function(e){
+        var extra = e.to === 'abo' ? '・<span style="color:var(--gold2)">待晚間批次處理</span>' : '';
+        return '<div class="log-row"><span class="who">' + esc(e.name) + '</span>：' + STAR_LABEL[e.from] + ' → ' + STAR_LABEL[e.to] + ' <span style="color:var(--mut2)">' + esc(e.at) + '</span>' + extra + '</div>';
+      }).join('');
+    }
     function renderDaily(){
-      renderProgress(); renderTargets(); renderDateNav(); renderRoster(); renderForms(); renderClosing(); renderWeek(); renderAppts(); renderPool(); renderLog(); renderDatalist();
+      renderProgress(); renderDateNav(); renderRoster(); renderAppts(); renderClosing(); renderWeek(); renderPool(); renderLog(); renderDatalist();
     }
 
-    /* ================= daily actions ================= */
-    function upsertPoolPerson(name, originIfNew){
-      var p = findByName(state.pool, name);
-      if(!p){
-        var sim = similarPeople(name);
-        if(sim.length) return { dup: sim };
-        p = { id: uid('p'), name:name, alias:'', tag:'', cat: originIfNew === 'new' ? 1 : 4,
-              origin: originIfNew, type:'none', rel:1, follow:false, next:false,
-              lastRoster:null, lastContact:null, note:'' };
-        state.pool.push(p);
-      }
-      return { person: p };
+    /* ================= people picker ================= */
+    function pickerListId(ctx, targetId){ return ctx === 'swap' ? 'swapList' : 'picklist-' + ctx + '-' + targetId; }
+    function pickerHTML(ctx, targetId, group){
+      var listId = pickerListId(ctx, targetId);
+      return '<label class="fld-label">搜尋人名</label>' +
+        '<input type="text" data-picksearch="' + listId + '" placeholder="打名搵人（花名都搵到）…" />' +
+        '<div class="newname-row"><input type="text" id="newname-' + ctx + '-' + targetId + '" placeholder="或者直接打個新名入嚟" />' +
+        '<button class="use-name-btn" data-usename="' + ctx + '" data-target="' + targetId + '" data-group="' + (group || '') + '">用呢個名</button></div>' +
+        '<h4 class="common-title">★ 常用（<span data-pickcount="' + listId + '">0</span>）</h4>' +
+        '<div class="pick-list" id="' + listId + '"></div>';
     }
-    function warnHTML(sim, kind){
-      return '<div class="warn-box">池入面已經有差唔多嘅名：<b>' + sim.map(function(p){ return esc(p.name); }).join('、') + '</b>，係咪同一位？' +
-        '<div class="row"><button class="mini-btn" data-dup-use="' + esc(sim[0].name) + '" data-dup-kind="' + kind + '">用返呢位</button>' +
-        '<button class="mini-btn" data-dup-force="' + kind + '">唔係，照樣新增</button></div></div>';
-    }
-    function addContact(force){
-      var inp = $('f-contact-name');
-      var name = inp.value.trim();
-      if(!name){ toast('入咗名先'); inp.focus(); return; }
+    function pickerDisabled(p, ctx, targetId){
       var ds = state.viewDate, day = dayOf(ds);
-      var p = findByName(state.pool, name);
-      if(!p){
-        var sim = similarPeople(name);
-        if(sim.length && force !== true){ $('warn-contact').innerHTML = warnHTML(sim, 'contact'); return; }
-        p = { id: uid('p'), name:name, alias:'', tag:'', cat:4, origin:'talent', type:'none', rel:1,
-              follow:false, next:false, lastRoster:ds, lastContact:ds, note:'' };
-        state.pool.push(p);
-        day.follow.push({ pid:p.id, st:2 });
-        p.lastContact = ds;
-        save(); renderAll(); toast('已加 ' + name + ' 入跟進組，並標為已完成');
-        return;
+      if(ctx === 'swap'){
+        var inR = false;
+        day.follow.concat(day.newc).forEach(function(r){ if(r.pid === p.id) inR = true; });
+        return inR ? '在名單' : null;
       }
-      var row = null;
-      day.follow.forEach(function(r){ if(r.pid === p.id) row = r; });
-      if(row){ row.st = 2; }
-      else { day.follow.push({ pid:p.id, st:2 }); }
-      p.lastContact = ds; p.lastRoster = ds;
-      $('warn-contact').innerHTML = '';
-      save(); renderAll(); toast(name + ' 已標為已完成，計入聯絡數');
+      var coll = ctx === 'meet' ? state.meetings : state.offers;
+      var item = null;
+      coll.forEach(function(x){ if(x.id === targetId) item = x; });
+      if(item && item.people.some(function(x){ return x.name === p.name; })) return '已加入';
+      return null;
     }
-    function addNewContact(force){
-      var inp = $('f-new-name');
-      var name = inp.value.trim();
-      if(!name){ toast('入咗名先'); inp.focus(); return; }
-      var ds = state.viewDate, day = dayOf(ds);
-      var p = findByName(state.pool, name);
-      if(!p){
-        var sim = similarPeople(name);
-        if(sim.length && force !== true){ $('warn-new').innerHTML = warnHTML(sim, 'new'); return; }
-        p = { id: uid('p'), name:name, alias:'', tag:'', cat:1, origin:'new', type:'none', rel:1,
-              follow:false, next:false, lastRoster:ds, lastContact:ds, note:'' };
-        state.pool.push(p);
-        day.newc.push({ pid:p.id, st:2 });
-        save(); renderAll(); toast('已加 ' + name + ' 入新聯絡組，計入陌生認識');
-        return;
-      }
-      if(p.origin !== 'new'){ toast(name + ' 唔係新人來源，唔入新聯絡組'); return; }
-      var row = null;
-      day.newc.forEach(function(r){ if(r.pid === p.id) row = r; });
-      if(row) row.st = 2; else day.newc.push({ pid:p.id, st:2 });
-      p.lastContact = ds; p.lastRoster = ds;
-      $('warn-new').innerHTML = '';
-      save(); renderAll(); toast(name + ' 已標為已完成，計入陌生認識');
-    }
-    function addAppt(){
-      var name = $('f-appt-name').value.trim();
-      var time = $('f-appt-time').value;
-      if(!name){ toast('入咗名先'); return; }
-      dayOf(state.viewDate).appts.push({ name:name, time:time || '' });
-      var p = findByName(state.pool, name);
-      if(p) p.lastContact = state.viewDate;
-      save(); renderAll(); toast('已記錄約會：' + name + (time ? ' ' + time : ''));
-    }
-    function drawRandom(){
-      var d = dayOf(state.viewDate);
-      var rows = d.follow.concat(d.newc);
-      if(!rows.length){ toast('名單冇人，抽唔到'); return; }
-      var bag = [];
-      rows.forEach(function(r){
-        var p = person(r.pid); if(!p || p.archived) return;
-        var w = p.type !== 'none' ? 3 : 1;
-        for(var i=0;i<w;i++) bag.push(p);
+    function fillPicker(ctx, targetId, group){
+      var listId = pickerListId(ctx, targetId);
+      var el = $(listId);
+      if(!el) return;
+      var list = state.pool.filter(function(p){ return !p.archived; }).slice().sort(function(a, b){
+        var fa = a.follow ? 1 : 0, fb = b.follow ? 1 : 0;
+        if(fa !== fb) return fb - fa;
+        var sa = a.type !== 'none' ? 1 : 0, sb = b.type !== 'none' ? 1 : 0;
+        if(sa !== sb) return sb - sa;
+        return byOldestRoster(a, b);
       });
-      if(!bag.length) return;
-      var pick = bag[Math.floor(Math.random() * bag.length)];
-      ui.drawnPid = pick.id;
-      $('drawName').textContent = pick.name;
-      $('drawBanner').classList.add('show');
-      renderRoster();
-      var el = document.querySelector('.prow.drawn');
-      if(el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+      var cntEl = document.querySelector('[data-pickcount="' + listId + '"]');
+      if(cntEl) cntEl.textContent = list.length;
+      if(ctx === 'swap') $('swapCount').textContent = list.length;
+      el.innerHTML = list.map(function(p){
+        var dis = pickerDisabled(p, ctx, targetId);
+        return '<div class="pick-row" data-pname="' + esc((p.name + ' ' + (p.alias || '')).toLowerCase()) + '">' +
+          '<div class="pick-line1"><span class="pick-name">' + esc(p.name) + '</span>' +
+            '<span class="src-chip">' + srcChip(p) + '</span>' +
+            (p.follow ? '<span class="follow-chip">跟緊</span>' : '') +
+            '<button class="add-btn" data-pickadd="' + ctx + '" data-target="' + targetId + '" data-group="' + (group || '') + '" data-pid="' + p.id + '"' + (dis ? ' disabled' : '') + '>' + (dis || '＋ 加入') + '</button></div>' +
+          '<div class="pick-line2">' + relHTML(p, true) +
+            '<button class="flag-chip' + (p.follow ? ' on' : '') + '" data-act="flag-follow" data-pid="' + p.id + '">跟緊</button>' +
+            '<button class="star-mini ' + (p.type === 'none' ? '' : p.type) + '" data-act="star" data-pid="' + p.id + '" aria-label="切換星色">' + starChar(p.type) + '</button></div>' +
+          '</div>';
+      }).join('');
     }
+    function refreshPickers(){
+      if(ui.swap) fillPicker('swap', '', ui.swap.group);
+      document.querySelectorAll('[data-pickerzone]').forEach(function(z){
+        fillPicker(z.getAttribute('data-pickerzone'), z.getAttribute('data-target'), z.getAttribute('data-group') || '');
+      });
+    }
+    document.addEventListener('input', function(e){
+      var inp = e.target.closest ? e.target.closest('[data-picksearch]') : null;
+      if(!inp) return;
+      var list = $(inp.getAttribute('data-picksearch'));
+      if(!list) return;
+      var q = inp.value.trim().toLowerCase();
+      list.querySelectorAll('.pick-row').forEach(function(row){
+        row.style.display = (!q || row.getAttribute('data-pname').indexOf(q) >= 0) ? '' : 'none';
+      });
+    });
 
-    /* ================= focus view ================= */
-    function openFocus(pid){
+    /* ================= swap modal ================= */
+    function openSwap(group, pid){
       var p = person(pid); if(!p) return;
-      ui.focusPid = pid;
-      var ds = state.viewDate, day = dayOf(ds), row = null, group = null;
-      day.follow.forEach(function(r){ if(r.pid === pid){ row = r; group = 'follow'; } });
-      if(!row) day.newc.forEach(function(r){ if(r.pid === pid){ row = r; group = 'newc'; } });
-      $('focusCard').innerHTML =
-        '<button class="focus-star ' + (p.type === 'none' ? 's-none' : starBtnClass(p.type)) + '" id="f-star" aria-label="切換星色">' + starChar(p.type) + '</button>' +
-        '<div class="fname">' + esc(p.name) + '</div>' +
-        '<div class="fmeta">' + metaLine(p) + '</div>' +
-        (row ? '<div class="frow"><button class="status-pill st-' + row.st + '" id="f-status">' + D_STATUS[row.st] + '</button></div>' : '') +
-        '<div class="rel-wrap" style="text-align:left"><span class="rl">關係</span>' +
-          '<input type="range" min="1" max="5" step="1" value="' + p.rel + '" id="f-rel" aria-label="關係值" />' +
-          '<span class="rv" id="f-rv">' + p.rel + '</span></div>' +
-        '<div class="frow"><button class="gold-btn" id="f-close">完成，返去</button></div>';
-      $('focusWrap').classList.add('show');
-      $('f-star').addEventListener('click', function(){ cycleStar(p); openFocus(pid); renderAll(); });
-      if(row){
-        $('f-status').addEventListener('click', function(){
-          row.st = (row.st + 1) % 3;
-          if(row.st === 2) p.lastContact = ds;
-          save(); openFocus(pid); renderAll();
-        });
-      }
-      $('f-rel').addEventListener('input', function(){
-        p.rel = parseInt(this.value, 10);
-        $('f-rv').textContent = p.rel;
-        save();
-        var rv = $('rv-' + p.id); if(rv) rv.textContent = p.rel;
+      ui.swap = { group: group, pid: pid };
+      ui.swapRecord = '';
+      $('swapTitle').textContent = '替換「' + p.name + '」';
+      $('swapConfirmName').textContent = p.name;
+      $('swapRecord').classList.add('hidden');
+      $('swapSearch').value = '';
+      $('swapNewName').value = '';
+      document.querySelectorAll('[data-swapconfirm]').forEach(function(b){
+        b.classList.toggle('on', p.confirm === b.getAttribute('data-swapconfirm') && b.getAttribute('data-swapconfirm') !== 'old');
+        b.classList.toggle('on-old', p.confirm === 'old' && b.getAttribute('data-swapconfirm') === 'old');
       });
-      $('f-close').addEventListener('click', closeFocus);
+      fillPicker('swap', '', group);
+      $('swapWrap').classList.add('show');
     }
-    function closeFocus(){ $('focusWrap').classList.remove('show'); ui.focusPid = null; renderAll(); }
-    $('focusWrap').addEventListener('click', function(e){ if(e.target === this) closeFocus(); });
-    $('drawClose').addEventListener('click', function(){ $('drawBanner').classList.remove('show'); ui.drawnPid = null; renderRoster(); });
-    $('drawFocus').addEventListener('click', function(){ if(ui.drawnPid) openFocus(ui.drawnPid); });
+    function closeSwap(){ ui.swap = null; $('swapWrap').classList.remove('show'); }
+    function doSwap(newPerson){
+      if(!ui.swap || !newPerson) return;
+      var ds = state.viewDate, day = dayOf(ds);
+      var group = ui.swap.group, oldPid = ui.swap.pid;
+      var old = person(oldPid);
+      var idx = -1;
+      day[group].forEach(function(r, i){ if(r.pid === oldPid) idx = i; });
+      if(idx < 0){ closeSwap(); return; }
+      day[group][idx] = { pid: newPerson.id, st: 0, note: '' };
+      if(!day.removed) day.removed = [];
+      if(day.removed.indexOf(oldPid) < 0) day.removed.push(oldPid);
+      newPerson.lastRoster = ds;
+      closeSwap();
+      save(); renderAll();
+      toast('已換人：' + (old ? old.name : '') + ' → ' + newPerson.name);
+    }
+    $('swapClose').addEventListener('click', closeSwap);
+    $('swapWrap').addEventListener('click', function(e){ if(e.target === this) closeSwap(); });
+    document.querySelectorAll('[data-swapconfirm]').forEach(function(b){
+      b.addEventListener('click', function(){
+        if(!ui.swap) return;
+        var p = person(ui.swap.pid); if(!p) return;
+        var kind = this.getAttribute('data-swapconfirm');
+        var rec = '';
+        if(kind === 'same'){ p.confirm = 'same'; p.archived = false; rec = '已記錄：照舊。'; }
+        else if(kind === 'less'){
+          p.confirm = 'less'; p.archived = false;
+          if(p.type !== 'none'){
+            state.starLog.unshift({ pid:p.id, name:p.name, from:p.type, to:'none', at: new Date().toLocaleString('zh-Hant') });
+            if(state.starLog.length > 60) state.starLog.length = 60;
+            p.type = 'none';
+          }
+          rec = '已記錄：冇咁積極，星星已取消。';
+        }
+        else { p.confirm = 'old'; p.archived = true; rec = '已記錄：舊名單・唔使跟。'; }
+        ui.swapRecord = rec;
+        var rl = $('swapRecord');
+        rl.textContent = rec;
+        rl.classList.remove('hidden');
+        document.querySelectorAll('[data-swapconfirm]').forEach(function(x){
+          x.classList.toggle('on', kind === x.getAttribute('data-swapconfirm') && kind !== 'old');
+          x.classList.toggle('on-old', kind === 'old' && x.getAttribute('data-swapconfirm') === 'old');
+        });
+        save(); renderAll(); fillPicker('swap', '', ui.swap.group);
+      });
+    });
+    $('swapRandom').addEventListener('click', function(){
+      if(!ui.swap) return;
+      var ds = state.viewDate, day = dayOf(ds);
+      var inRoster = {};
+      day.follow.concat(day.newc).forEach(function(r){ inRoster[r.pid] = 1; });
+      var wantNew = ui.swap.group === 'newc';
+      var bag = [];
+      state.pool.forEach(function(p){
+        if(p.archived || inRoster[p.id]) return;
+        if(wantNew ? p.origin !== 'new' : p.origin === 'new') return;
+        var w = p.type !== 'none' ? 3 : 1;
+        for(var i = 0; i < w; i++) bag.push(p);
+      });
+      if(!bag.length){ toast('池入面冇其他合資格人選可抽'); return; }
+      doSwap(bag[Math.floor(Math.random() * bag.length)]);
+    });
+    $('swapUseNew').addEventListener('click', function(){
+      if(!ui.swap) return;
+      var name = $('swapNewName').value.trim();
+      if(!name){ toast('入咗名先'); return; }
+      var existing = findByName(state.pool, name);
+      if(existing){ doSwap(existing); return; }
+      var np = { id: uid('p'), name:name, alias:'', tag:'', cat: ui.swap.group === 'newc' ? 1 : 4,
+                 origin: ui.swap.group === 'newc' ? 'new' : 'talent', type:'none', rel:1, follow:false, next:false,
+                 lastRoster: state.viewDate, lastContact:null, note:'' };
+      state.pool.push(np);
+      doSwap(np);
+    });
 
     /* ================= render: meetings ================= */
-    function statusCounts(people, labels){
-      var c = labels.map(function(){ return 0; });
-      people.forEach(function(x){ c[x.st]++; });
-      return c;
+    function meetingMeta(m){
+      var bits = [fmtDateFull(m.date)];
+      if(m.time) bits.push(m.time);
+      if(m.place) bits.push(m.place);
+      if(m.fee) bits.push(m.fee);
+      if(m.age) bits.push(m.age);
+      return bits.join('・');
     }
-    function countChips(people, labels, prefix, posIdx){
-      var c = statusCounts(people, labels);
-      return '<div class="count-row">' + labels.map(function(l, i){
-        return '<span class="count-chip' + (i === posIdx ? ' pos' : '') + '">' + l + ' <b>' + c[i] + '</b></span>';
-      }).join('') + '<span class="count-chip">共 <b>' + people.length + '</b> 人</span></div>';
+    function renderWeekOverview(){
+      var mon = mondayOf(state.viewDate);
+      var sun = addDays(mon, 6);
+      function md(s){ var d = new Date(s + 'T12:00:00'); return (d.getMonth()+1) + '/' + d.getDate(); }
+      $('weekOverviewTitle').textContent = '本週總覽（' + md(mon) + ' 週一 – ' + md(sun) + ' 週日）';
+      var inWeek = state.meetings.filter(function(m){ return m.date && m.date >= mon && m.date <= sun; });
+      $('weekOverviewCount').textContent = '今週 ' + inWeek.length + ' 場';
+      $('weekOverviewBody').innerHTML = inWeek.length
+        ? inWeek.map(function(m){
+            var attend = m.people.filter(function(x){ return x.st === 2; }).length;
+            return '<div class="week-row"><span class="wd">' + esc(m.name) + '</span><span style="color:var(--mut)">' + md(m.date) + ' ' + wkShort(m.date) + (m.time ? ' ' + esc(m.time) : '') + '</span><span class="week-chip">出席 <b>' + attend + '</b> 人</span></div>';
+          }).join('')
+        : '<p class="empty-note">今週未有會議。</p>';
     }
     function memberRowHTML(x, kind, parentId){
-      return '<div class="gcard prow"><div class="line1">' +
-        '<div class="pname"><div class="nm" style="font-size:16.5px">' + esc(x.name) + '</div></div>' +
+      return '<div class="member-row">' +
+        '<span class="mn2">' + esc(x.name) + '</span>' +
         '<button class="status-pill ' + (kind === 'meet' ? 'm-' : 'o-') + x.st + '" data-act="' + kind + '-status" data-parent="' + parentId + '" data-name="' + esc(x.name) + '">' +
           (kind === 'meet' ? M_STATUS[x.st] : O_STATUS[x.st]) + '</button>' +
         '<button class="mini-btn danger" data-act="' + kind + '-remove" data-parent="' + parentId + '" data-name="' + esc(x.name) + '">移除</button>' +
-        '</div></div>';
+        '</div>';
     }
     function renderMeetings(){
-      var chips = state.meetings.map(function(m){
+      renderWeekOverview();
+      $('meetChips').innerHTML = state.meetings.map(function(m){
         var attend = m.people.filter(function(x){ return x.st === 2; }).length;
+        var d = m.date ? new Date(m.date + 'T12:00:00') : null;
+        var sub = d ? ((d.getMonth()+1) + '/' + d.getDate() + ' ' + wkShort(m.date) + (m.time ? ' ' + m.time : '') + '・出席 ' + attend + ' 人') : '出席 ' + attend + ' 人';
         return '<button class="meet-chip' + (m.id === state.selMeeting ? ' sel' : '') + '" data-meet="' + m.id + '">' +
-          '<span class="mn">' + esc(m.name) + '</span><span class="mc">' + esc(m.when || '') + '・會出席 ' + attend + ' 人</span></button>';
-      }).join('');
-      $('meetChips').innerHTML = chips || '<p style="color:var(--mut)">未有會議，用下面表格新增。</p>';
+          '<span class="mn">' + esc(m.name) + '</span><span class="mc">' + esc(sub) + '</span></button>';
+      }).join('') || '<p class="empty-note">未有會議，用下面「＋ 新增會議」加。</p>';
       document.querySelectorAll('[data-meet]').forEach(function(b){
         b.addEventListener('click', function(){ state.selMeeting = this.getAttribute('data-meet'); save(); renderMeetings(); });
       });
       var m = null;
       state.meetings.forEach(function(x){ if(x.id === state.selMeeting) m = x; });
       if(!m){ $('meetDetail').innerHTML = ''; return; }
+      var attend = m.people.filter(function(x){ return x.st === 2; }).length;
       $('meetDetail').innerHTML =
-        '<div class="gcard meet-detail"><h3>' + esc(m.name) + '</h3>' +
-        '<div class="when">' + esc(m.when || '') + '・每星期出席情況按狀態記錄</div>' +
-        '<div class="poster-slot">海報位</div>' +
-        countChips(m.people, M_STATUS, 'm', 2) +
-        '<div class="plist" style="margin-top:10px">' + m.people.map(function(x){ return memberRowHTML(x, 'meet', m.id); }).join('') + '</div>' +
-        (m.people.length ? '' : '<p style="color:var(--mut)">呢個會議未有人，用下面加人。</p>') +
-        '<div class="add-inline"><input type="text" list="poolNames" id="meet-add-name" placeholder="加人入呢個會議" />' +
-        '<button class="gold-btn" id="meet-add-btn">＋ 加人</button></div>' +
-        '<div style="margin-top:10px"><button class="mini-btn danger" id="meet-del-btn">刪除呢個會議</button></div></div>';
-      $('meet-add-btn').addEventListener('click', function(){
-        var name = $('meet-add-name').value.trim();
-        if(!name){ toast('入咗名先'); return; }
-        if(m.people.some(function(x){ return x.name === name; })){ toast(name + ' 已經喺呢個會議名單'); return; }
-        var p = findByName(state.pool, name);
-        m.people.push({ pid: p ? p.id : null, name:name, st:0 });
-        save(); renderMeetings(); toast('已加 ' + name + ' 入「' + m.name + '」');
-      });
+        '<div class="gcard meet-detail">' +
+          '<div class="md-head"><h3>' + esc(m.name) + '</h3>' +
+            '<div class="md-count"><div class="big">' + attend + '</div><div class="lbl">人會出席</div>' +
+            '<div style="margin-top:8px"><button class="mini-btn danger" id="meet-del-btn">刪除</button></div></div></div>' +
+          '<div class="md-meta">' + esc(meetingMeta(m)) + '</div>' +
+          '<div class="poster">海報<button class="zoom-chip" data-poster="' + esc(m.name) + '">撳圖放大</button></div>' +
+          '<div class="plist">' + m.people.map(function(x){ return memberRowHTML(x, 'meet', m.id); }).join('') + '</div>' +
+          (m.people.length ? '' : '<p class="empty-note">呢個會議未有人，用下面加人。</p>') +
+          '<div class="picker-zone picker" data-pickerzone="meet" data-target="' + m.id + '">' + pickerHTML('meet', m.id, '') + '</div>' +
+        '</div>';
+      fillPicker('meet', m.id, '');
       $('meet-del-btn').addEventListener('click', function(){
         state.meetings = state.meetings.filter(function(x){ return x.id !== m.id; });
         state.selMeeting = state.meetings.length ? state.meetings[0].id : null;
@@ -1289,26 +1546,22 @@
     /* ================= render: offers ================= */
     function renderOffers(){
       $('offerList').innerHTML = state.offers.map(function(o){
-        var open = !!ui.openOffers[o.id];
-        return '<div class="gcard offer-card"><div style="display:flex;align-items:flex-start;gap:8px">' +
-          '<div style="flex:1"><h3>' + esc(o.name) + '</h3><div class="desc">' + esc(o.desc || '') + '</div></div>' +
-          '<button class="mini-btn" data-offer-toggle="' + o.id + '">' + (open ? '摺起' : '展開') + '</button></div>' +
-          '<div class="poster-slot">海報位</div>' +
-          countChips(o.people, O_STATUS, 'o', 2) +
-          (open ? '<div class="plist" style="margin-top:10px">' + o.people.map(function(x){ return memberRowHTML(x, 'offer', o.id); }).join('') + '</div>' +
-            (o.people.length ? '' : '<p style="color:var(--mut)">呢張優惠卡未有人，用下面加人。</p>') +
-            '<div class="add-inline"><input type="text" list="poolNames" id="offer-add-' + o.id + '" placeholder="加人入呢張優惠卡" />' +
-            '<button class="gold-btn" data-offer-add="' + o.id + '">＋ 加人</button></div>' : '') +
-          '<div style="margin-top:10px"><button class="mini-btn danger" data-offer-del="' + o.id + '">刪除呢張優惠</button></div>' +
+        var pushed = o.people.filter(function(x){ return x.st === 1; }).length;
+        var bought = o.people.filter(function(x){ return x.st === 2; }).length;
+        return '<div class="gcard offer-card">' +
+          '<div class="offer-head"><h3>' + esc(o.name) + '</h3>' +
+            '<button class="mini-btn danger" data-offer-del="' + o.id + '">刪除</button></div>' +
+          (o.badge ? '<span class="offer-badge">有效期：' + esc(o.badge) + '</span>' : '') +
+          '<div class="offer-stats">推名單 ' + o.people.length + ' 人・已推 ' + pushed + '・已買 ' + bought + '</div>' +
+          (o.desc ? '<div class="offer-content">' + esc(o.desc) + '</div>' : '') +
+          '<div class="poster">海報<button class="zoom-chip" data-poster="' + esc(o.name) + '">撳圖放大</button></div>' +
+          '<button class="share-btn" data-share="' + o.id + '"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="M7 8l5-5 5 5"/><path d="M5 13v7h14v-7"/></svg>傳送俾朋友</button>' +
+          '<div class="plist" style="margin-top:10px">' + o.people.map(function(x){ return memberRowHTML(x, 'offer', o.id); }).join('') + '</div>' +
+          (o.people.length ? '' : '<p class="empty-note">呢張優惠卡未有人，用下面加人。</p>') +
+          '<div class="picker-zone picker" data-pickerzone="offer" data-target="' + o.id + '">' + pickerHTML('offer', o.id, '') + '</div>' +
           '</div>';
-      }).join('') || '<p style="color:var(--mut)">未有優惠，用下面表格新增。</p>';
-      document.querySelectorAll('[data-offer-toggle]').forEach(function(b){
-        b.addEventListener('click', function(){
-          var id = this.getAttribute('data-offer-toggle');
-          ui.openOffers[id] = !ui.openOffers[id];
-          renderOffers();
-        });
-      });
+      }).join('') || '<p class="empty-note">未有優惠，用下面「＋ 新增優惠」加。</p>';
+      state.offers.forEach(function(o){ fillPicker('offer', o.id, ''); });
       document.querySelectorAll('[data-offer-del]').forEach(function(b){
         b.addEventListener('click', function(){
           var id = this.getAttribute('data-offer-del');
@@ -1317,20 +1570,69 @@
           save(); renderOffers(); toast('已刪除優惠「' + (o ? o.name : '') + '」');
         });
       });
-      document.querySelectorAll('[data-offer-add]').forEach(function(b){
+      document.querySelectorAll('[data-share]').forEach(function(b){
         b.addEventListener('click', function(){
-          var id = this.getAttribute('data-offer-add');
-          var inp = $('offer-add-' + id);
-          var name = inp.value.trim();
-          if(!name){ toast('入咗名先'); return; }
+          var id = this.getAttribute('data-share');
           var o = null; state.offers.forEach(function(x){ if(x.id === id) o = x; });
           if(!o) return;
-          if(o.people.some(function(x){ return x.name === name; })){ toast(name + ' 已經喺呢張優惠卡'); return; }
-          var p = findByName(state.pool, name);
-          o.people.push({ pid: p ? p.id : null, name:name, st:0 });
-          save(); renderOffers(); toast('已加 ' + name + ' 入「' + o.name + '」');
+          var text = o.name + (o.badge ? '\n有效期：' + o.badge : '') + (o.desc ? '\n' + o.desc : '');
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(function(){ toast('已複製優惠內容，貼俾朋友就得'); }, function(){ toast('複製唔到，請長按文字複製'); });
+          } else { toast('呢個瀏覽器唔支援一鍵複製'); }
         });
       });
+    }
+
+    /* ================= daily actions ================= */
+    function addFromForm(kind, force){
+      var isNew = kind === 'new';
+      var nameInp = $(isNew ? 'fn-name' : 'fc-name');
+      var name = nameInp.value.trim();
+      if(!name){ toast('入咗名先'); nameInp.focus(); return; }
+      var stVal = parseInt($(isNew ? 'fn-status' : 'fc-status').value, 10);
+      var purpose = $(isNew ? 'fn-purpose' : 'fc-purpose').value.trim();
+      var resp = isNew ? '' : $('fc-resp').value.trim();
+      var next = isNew ? '' : $('fc-next').value.trim();
+      var warnId = isNew ? 'fn-warn' : 'fc-warn';
+      var ds = state.viewDate, day = dayOf(ds);
+      var group = isNew ? 'newc' : 'follow';
+      var p = findByName(state.pool, name);
+      if(!p){
+        var sim = similarPeople(name);
+        if(sim.length && force !== true){ $(warnId).innerHTML = warnHTML(sim, kind); return; }
+        p = { id: uid('p'), name:name, alias:'', tag:'', cat: isNew ? 1 : 4, origin: isNew ? 'new' : 'talent',
+              type:'none', rel:1, follow:false, next:false, lastRoster:ds, lastContact:null, note:'' };
+        state.pool.push(p);
+      }
+      if(isNew && p.origin !== 'new'){ toast(name + ' 唔係新人來源，唔入新聯絡組'); return; }
+      if(!isNew && p.origin === 'new'){ toast(name + ' 係新人來源，請去陌生認識嗰邊加'); return; }
+      var row = null;
+      day[group].forEach(function(r){ if(r.pid === p.id) row = r; });
+      if(!row){ row = { pid:p.id, st:0 }; day[group].push(row); }
+      row.st = stVal;
+      if(purpose) row.note = purpose;
+      if(resp) row.resp = resp;
+      if(next) row.nextStep = next;
+      if(stVal === 2) p.lastContact = ds;
+      p.lastRoster = ds;
+      $(warnId).innerHTML = '';
+      nameInp.value = '';
+      if(!isNew){ $('fc-purpose').value = ''; $('fc-resp').value = ''; $('fc-next').value = ''; }
+      else { $('fn-purpose').value = ''; }
+      save(); renderAll();
+      toast('已加 ' + name + '，狀態：' + D_STATUS[stVal]);
+    }
+    function addAppt(){
+      var name = $('fa-name').value.trim();
+      if(!name){ toast('入咗名先'); $('fa-name').focus(); return; }
+      var time = $('fa-time').value;
+      var purpose = $('fa-purpose').value.trim();
+      var stVal = parseInt($('fa-status').value, 10);
+      dayOf(state.viewDate).appts.push({ name:name, time:time || '', purpose:purpose, st:stVal });
+      var p = findByName(state.pool, name);
+      if(p) p.lastContact = state.viewDate;
+      $('fa-name').value = ''; $('fa-purpose').value = '';
+      save(); renderAll(); toast('已記錄約會：' + name + (time ? ' ' + time : ''));
     }
 
     /* ================= global click delegation ================= */
@@ -1339,14 +1641,67 @@
       if(dupUse){
         var kind = dupUse.getAttribute('data-dup-kind');
         var nm = dupUse.getAttribute('data-dup-use');
-        if(kind === 'contact'){ $('f-contact-name').value = nm; $('warn-contact').innerHTML = ''; addContact(true); }
-        else { $('f-new-name').value = nm; $('warn-new').innerHTML = ''; addNewContact(true); }
+        if(kind === 'contact'){ $('fc-name').value = nm; $('fc-warn').innerHTML = ''; addFromForm('contact', true); }
+        else { $('fn-name').value = nm; $('fn-warn').innerHTML = ''; addFromForm('new', true); }
         return;
       }
       var dupForce = e.target.closest('[data-dup-force]');
       if(dupForce){
-        if(dupForce.getAttribute('data-dup-force') === 'contact'){ $('warn-contact').innerHTML = ''; addContact(true); }
-        else { $('warn-new').innerHTML = ''; addNewContact(true); }
+        if(dupForce.getAttribute('data-dup-force') === 'contact'){ $('fc-warn').innerHTML = ''; addFromForm('contact', true); }
+        else { $('fn-warn').innerHTML = ''; addFromForm('new', true); }
+        return;
+      }
+      var posterBtn = e.target.closest('[data-poster]');
+      if(posterBtn){
+        $('posterTitle').textContent = posterBtn.getAttribute('data-poster');
+        $('posterWrap').classList.add('show');
+        return;
+      }
+      var useName = e.target.closest('[data-usename]');
+      if(useName){
+        var uctx = useName.getAttribute('data-usename');
+        var utarget = useName.getAttribute('data-target');
+        var uinp = $('newname-' + uctx + '-' + utarget);
+        var uname = uinp ? uinp.value.trim() : '';
+        if(!uname){ toast('入咗名先'); return; }
+        var up = findByName(state.pool, uname);
+        if(!up){
+          up = { id: uid('p'), name:uname, alias:'', tag:'', cat:4, origin:'talent', type:'none', rel:1,
+                 follow:false, next:false, lastRoster:null, lastContact:null, note:'' };
+          state.pool.push(up);
+        }
+        var ucoll = uctx === 'meet' ? state.meetings : state.offers;
+        var uitem = null;
+        ucoll.forEach(function(x){ if(x.id === utarget) uitem = x; });
+        if(uitem){
+          if(uitem.people.some(function(x){ return x.name === uname; })){ toast(uname + ' 已經喺名單入面'); return; }
+          uitem.people.push({ pid: up.id, name: uname, st: 0 });
+          save(); renderAll(); toast('已加 ' + uname);
+        }
+        return;
+      }
+      var pickAdd = e.target.closest('[data-pickadd]');
+      if(pickAdd && !pickAdd.disabled){
+        var pctx = pickAdd.getAttribute('data-pickadd');
+        var pp = person(pickAdd.getAttribute('data-pid'));
+        if(!pp) return;
+        if(pctx === 'swap'){ doSwap(pp); return; }
+        var ptarget = pickAdd.getAttribute('data-target');
+        var pcoll = pctx === 'meet' ? state.meetings : state.offers;
+        var pitem = null;
+        pcoll.forEach(function(x){ if(x.id === ptarget) pitem = x; });
+        if(pitem){
+          if(pitem.people.some(function(x){ return x.name === pp.name; })){ toast(pp.name + ' 已經喺名單入面'); return; }
+          pitem.people.push({ pid: pp.id, name: pp.name, st: 0 });
+          save(); renderAll(); toast('已加 ' + pp.name);
+        }
+        return;
+      }
+      var gt = e.target.closest('[data-grouptoggle]');
+      if(gt){
+        var g = gt.getAttribute('data-grouptoggle');
+        ui.groupOpen[g] = !ui.groupOpen[g];
+        renderRoster();
         return;
       }
       var colBtn = e.target.closest('[data-collapse]');
@@ -1359,7 +1714,7 @@
       var p = pid ? person(pid) : null;
       var ds = state.viewDate, day = dayOf(ds);
 
-      if(act === 'star' && p){ cycleStar(p); renderAll(); toast(p.name + ' 變做' + STAR_LABEL[p.type] + (p.type === 'abo' ? '，已記入晚間批次' : '')); }
+      if(act === 'star' && p){ cycleStar(p); renderAll(); refreshPickers(); toast(p.name + ' 變做' + STAR_LABEL[p.type] + (p.type === 'abo' ? '，已記入晚間批次' : '')); }
       else if(act === 'status' && p){
         var group = t.getAttribute('data-group');
         var row = null;
@@ -1370,91 +1725,44 @@
           save(); renderAll();
         }
       }
-      else if(act === 'focus' && p){ openFocus(pid); }
+      else if(act === 'swap' && p){ openSwap(t.getAttribute('data-group'), pid); }
       else if(act === 'edit'){ ui.editingPid = pid; renderRoster(); var inp = $('ed-name'); if(inp){ inp.focus(); inp.select(); } }
       else if(act === 'cancel-edit'){ ui.editingPid = null; renderRoster(); }
       else if(act === 'save-edit' && p){
         var nn = $('ed-name').value.trim();
         var na = $('ed-alias').value.trim();
         var nt = $('ed-tag').value.trim();
-        if(!nn){ toast('主名唔可以空'); return; }
+        var nnote = $('ed-note').value.trim();
+        if(!nn){ toast('人名唔可以空'); return; }
         var sim = similarPeople(nn, p.id);
         if(sim.length && nn !== p.name){
           $('ed-warn').innerHTML = '<div class="warn-box">池入面已有差唔多嘅名：<b>' + sim.map(function(x){ return esc(x.name); }).join('、') + '</b>，照樣儲存就會有兩個相似名。</div>';
-          if(!t.dataset.confirmed){ t.dataset.confirmed = '1'; t.textContent = '照樣儲存'; return; }
+          if(!t.dataset.confirmed){ t.dataset.confirmed = '1'; return; }
         }
         var old = p.name;
         p.name = nn; p.alias = na; p.tag = nt;
+        ['follow','newc'].forEach(function(g){
+          day[g].forEach(function(r){ if(r.pid === p.id) r.note = nnote; });
+        });
         state.meetings.forEach(function(m){ m.people.forEach(function(x){ if(x.pid === p.id) x.name = nn; }); });
         state.offers.forEach(function(o){ o.people.forEach(function(x){ if(x.pid === p.id) x.name = nn; }); });
         day.appts.forEach(function(a){ if(a.name === old) a.name = nn; });
         ui.editingPid = null;
-        save(); renderAll(); toast('已改名：' + nn);
+        save(); renderAll(); toast('已儲存：' + nn);
       }
       else if(act === 'remove' && p){
-        var g = t.getAttribute('data-group');
+        var g2 = t.getAttribute('data-group');
         var idx = -1, removedCat = p.cat;
-        day[g].forEach(function(r, i){ if(r.pid === pid) idx = i; });
+        day[g2].forEach(function(r, i){ if(r.pid === pid) idx = i; });
         if(idx >= 0){
-          day[g].splice(idx, 1);
+          day[g2].splice(idx, 1);
           if(!day.removed) day.removed = [];
           day.removed.push(pid);
-          if(ui.drawnPid === pid) ui.drawnPid = null;
-          var added = refill(ds, g, removedCat);
+          if(ui.editingPid === pid) ui.editingPid = null;
+          var added = refill(ds, g2, removedCat);
           save(); renderAll();
           toast(added ? '已移除 ' + p.name + '，即刻補返 ' + added.name : '已移除 ' + p.name + '（池入面暫時冇人可補）');
         }
-      }
-      else if(act === 'swap' && p){
-        var grp = t.getAttribute('data-group');
-        var ri = -1;
-        day[grp].forEach(function(r, i){ if(r.pid === pid) ri = i; });
-        if(ri >= 0){
-          var cand = pickRefill(ds, grp, p.cat);
-          if(!cand){ toast('池入面冇其他合資格人選可換'); }
-          else {
-            day[grp][ri] = { pid: cand.id, st: 0, note: '' };
-            if(!day.removed) day.removed = [];
-            if(day.removed.indexOf(pid) < 0) day.removed.push(pid);
-            cand.lastRoster = ds;
-            if(ui.drawnPid === pid) ui.drawnPid = null;
-            if(ui.noteKey) ui.noteKey = null;
-            save(); renderAll();
-            toast('已換人：' + p.name + ' → ' + cand.name + '（狀態重置做未揾）');
-          }
-        }
-      }
-      else if(act === 'note'){
-        ui.noteKey = t.getAttribute('data-group') + ':' + pid;
-        renderRoster();
-        var ni = $('note-inp'); if(ni){ ni.focus(); ni.select(); }
-      }
-      else if(act === 'note-cancel'){ ui.noteKey = null; renderRoster(); }
-      else if(act === 'note-save' && p){
-        var grp2 = t.getAttribute('data-group');
-        var rowN = null;
-        day[grp2].forEach(function(r){ if(r.pid === pid) rowN = r; });
-        var inpN = $('note-inp');
-        if(rowN && inpN){ rowN.note = inpN.value.trim(); }
-        ui.noteKey = null;
-        save(); renderAll(); toast('已儲存「要做啲咩」');
-      }
-      else if(act === 'cf-same' && p){
-        p.confirm = 'same'; p.archived = false;
-        save(); renderAll(); toast(p.name + '：照舊，維持跟進');
-      }
-      else if(act === 'cf-less' && p){
-        p.confirm = 'less'; p.archived = false;
-        if(p.type !== 'none'){
-          state.starLog.unshift({ pid:p.id, name:p.name, from:p.type, to:'none', at: new Date().toLocaleString('zh-Hant') });
-          if(state.starLog.length > 60) state.starLog.length = 60;
-          p.type = 'none';
-        }
-        save(); renderAll(); toast(p.name + '：冇咁積極，粒星已攞走');
-      }
-      else if(act === 'cf-old' && p){
-        p.confirm = 'old'; p.archived = true;
-        save(); renderAll(); toast(p.name + '：已收起（舊名單・唔使跟），唔再入抽人同揀人名單；要成行刪走就㩒刪除');
       }
       else if(act === 'unarchive' && p){
         p.archived = false; p.confirm = 'same';
@@ -1464,7 +1772,7 @@
         day.appts.splice(parseInt(t.getAttribute('data-i'), 10), 1);
         save(); renderAll(); toast('已刪除約會記錄');
       }
-      else if(act === 'flag-follow' && p){ p.follow = !p.follow; save(); renderPool(); toast(p.name + (p.follow ? ' 已標跟緊' : ' 已取消跟緊')); }
+      else if(act === 'flag-follow' && p){ p.follow = !p.follow; save(); renderAll(); refreshPickers(); toast(p.name + (p.follow ? ' 已標跟緊' : ' 已取消跟緊')); }
       else if(act === 'flag-next' && p){ p.next = !p.next; save(); renderPool(); toast(p.name + (p.next ? ' 已標有下一步' : ' 已取消下一步標記')); }
       else if(act === 'meet-status' || act === 'offer-status'){
         var parent = t.getAttribute('data-parent');
@@ -1486,20 +1794,7 @@
       }
     });
 
-    /* relationship sliders (delegated, no full re-render while sliding) */
-    document.addEventListener('input', function(e){
-      var pid = e.target.getAttribute && e.target.getAttribute('data-rel');
-      if(!pid) return;
-      var p = person(pid); if(!p) return;
-      p.rel = parseInt(e.target.value, 10);
-      var rv = $('rv-' + pid); if(rv) rv.textContent = p.rel;
-      save();
-    });
-    document.addEventListener('change', function(e){
-      if(e.target && e.target.hasAttribute && e.target.hasAttribute('data-rel')) renderPool();
-    });
-
-    /* ================= tabs / date nav / add meeting & offer ================= */
+    /* ================= tabs / date nav / static form bindings ================= */
     document.querySelectorAll('.tab-btn').forEach(function(b){
       b.addEventListener('click', function(){
         ui.tab = this.getAttribute('data-tab');
@@ -1526,34 +1821,76 @@
       var cleaned = false;
       function cleanup(){ if(!cleaned){ cleaned = true; if(pick.parentNode) pick.parentNode.removeChild(pick); } }
       pick.addEventListener('change', function(){
-        if(pick.value){ state.viewDate = pick.value; ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); }
+        if(pick.value){ state.viewDate = pick.value; save(); renderDaily(); renderWeekOverview(); }
         cleanup();
       });
       pick.addEventListener('blur', function(){ setTimeout(cleanup, 400); });
       if(pick.showPicker){ try{ pick.showPicker(); }catch(e){ pick.focus(); pick.click(); } }
       else { pick.focus(); pick.click(); }
     });
-    $('datePrev').addEventListener('click', function(){ state.viewDate = addDays(state.viewDate, -1); ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); });
-    $('dateNext').addEventListener('click', function(){ state.viewDate = addDays(state.viewDate, 1); ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); });
-    $('dateToday').addEventListener('click', function(){ state.viewDate = todayStr(); ui.drawnPid = null; $('drawBanner').classList.remove('show'); save(); renderDaily(); });
-    $('addMeetBtn').addEventListener('click', function(){
-      var name = $('newMeetName').value.trim();
+    $('datePrev').addEventListener('click', function(){ state.viewDate = addDays(state.viewDate, -1); save(); renderDaily(); renderWeekOverview(); });
+    $('dateNext').addEventListener('click', function(){ state.viewDate = addDays(state.viewDate, 1); save(); renderDaily(); renderWeekOverview(); });
+    $('dateToday').addEventListener('click', function(){ state.viewDate = todayStr(); save(); renderDaily(); renderWeekOverview(); });
+
+    function bindToggle(btnId, formId, openLabel){
+      $(btnId).addEventListener('click', function(){
+        var f = $(formId);
+        var open = f.classList.toggle('hidden') === false;
+        this.textContent = open ? '收起' : openLabel;
+        if(open){ var inp = f.querySelector('input'); if(inp) inp.focus(); }
+      });
+    }
+    bindToggle('btnToggleContactForm', 'contactForm', '＋ 新增聯絡');
+    bindToggle('btnToggleApptForm', 'apptForm', '＋ 新增約會');
+    bindToggle('btnToggleNewForm', 'newForm', '＋ 新增');
+    bindToggle('btnToggleMeetForm', 'meetForm', '＋ 新增會議');
+    bindToggle('btnToggleOfferForm', 'offerForm', '＋ 新增優惠');
+    function bindCancel(btnId, formId, toggleBtnId, openLabel){
+      $(btnId).addEventListener('click', function(){
+        $(formId).classList.add('hidden');
+        $(toggleBtnId).textContent = openLabel;
+      });
+    }
+    bindCancel('fcCancel', 'contactForm', 'btnToggleContactForm', '＋ 新增聯絡');
+    bindCancel('faCancel', 'apptForm', 'btnToggleApptForm', '＋ 新增約會');
+    bindCancel('fnCancel', 'newForm', 'btnToggleNewForm', '＋ 新增');
+    bindCancel('nmCancel', 'meetForm', 'btnToggleMeetForm', '＋ 新增會議');
+    bindCancel('noCancel', 'offerForm', 'btnToggleOfferForm', '＋ 新增優惠');
+    $('fcSave').addEventListener('click', function(){ addFromForm('contact'); });
+    $('fnSave').addEventListener('click', function(){ addFromForm('new'); });
+    $('faSave').addEventListener('click', addAppt);
+    $('btnZoom').addEventListener('click', function(){
+      var card = $('qc-contact');
+      var zoomed = card.classList.toggle('zoom');
+      this.textContent = zoomed ? '⤢ 收起' : '⤢ 放大';
+    });
+    $('vidOff').addEventListener('click', function(){ var d = dayOf(state.viewDate); if(d.video){ d.video = false; save(); renderProgress(); } });
+    $('vidOn').addEventListener('click', function(){ var d = dayOf(state.viewDate); if(!d.video){ d.video = true; save(); renderProgress(); toast('今日短片已出 ✓'); } });
+    $('posterClose').addEventListener('click', function(){ $('posterWrap').classList.remove('show'); });
+    $('posterWrap').addEventListener('click', function(e){ if(e.target === this) this.classList.remove('show'); });
+    $('nmSave').addEventListener('click', function(){
+      var name = $('nm-name').value.trim();
       if(!name){ toast('入咗會議名先'); return; }
-      var m = { id: uid('m'), name:name, when: $('newMeetWhen').value.trim(), people: [] };
+      var m = { id: uid('m'), name:name, date: $('nm-date').value || '', time: $('nm-time').value.trim(), place: $('nm-place').value.trim(), fee:'', age:'', people: [] };
       state.meetings.push(m); state.selMeeting = m.id;
-      $('newMeetName').value = ''; $('newMeetWhen').value = '';
+      $('nm-name').value = ''; $('nm-time').value = ''; $('nm-place').value = ''; $('nm-date').value = '';
+      $('meetForm').classList.add('hidden'); $('btnToggleMeetForm').textContent = '＋ 新增會議';
       save(); renderMeetings(); toast('已新增會議「' + name + '」');
     });
-    $('addOfferBtn').addEventListener('click', function(){
-      var name = $('newOfferName').value.trim();
+    $('noSave').addEventListener('click', function(){
+      var name = $('no-name').value.trim();
       if(!name){ toast('入咗優惠名先'); return; }
-      var o = { id: uid('o'), name:name, desc: $('newOfferDesc').value.trim(), people: [] };
-      state.offers.push(o); ui.openOffers[o.id] = true;
-      $('newOfferName').value = ''; $('newOfferDesc').value = '';
+      var badge = $('no-badge').value.trim();
+      if(badge && badge.indexOf('禮品數量有限') < 0) badge += '・禮品數量有限，送完即止';
+      var o = { id: uid('o'), name:name, badge:badge, desc: $('no-desc').value.trim(), people: [] };
+      state.offers.push(o);
+      $('no-name').value = ''; $('no-badge').value = ''; $('no-desc').value = '';
+      $('offerForm').classList.add('hidden'); $('btnToggleOfferForm').textContent = '＋ 新增優惠';
       save(); renderOffers(); toast('已新增優惠「' + name + '」');
     });
 
     function renderAll(){ renderDaily(); renderMeetings(); renderOffers(); }
+    renderTargets();
     renderAll();
     </script>
   </body>
